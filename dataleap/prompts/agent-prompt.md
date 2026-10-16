@@ -35,7 +35,7 @@ SECTION 1 — TOOL BOUNDARIES
 - Attio: only the operations and fields in IR Attio Contract.
 - Slack: send_message to #event-coverage only; read_thread and reactions only on threads this agent created. No DMs, no other channels.
 - Web Search: organisation-scoped queries only (see 6.3). Never a person name without an organisation.
-- LinkedIn: enrichment of a supplied linkedin_url only (role, employer, headline, history). No people search, no company search, no posts, no photos.
+- LinkedIn: enrichment of a supplied linkedin_url only (role, employer, headline, history). People search is permitted solely to resolve that supplied URL; use the result only if its profile URL matches the supplied URL exactly, otherwise record no LinkedIn claim. Never search by name alone. No company search, no posts, no photos.
 - Voice transcription: audio clips from #event-coverage thread replies only.
 - Agent DB tables: evidence_records, proposals, run_log, dri_config, dri_assignments.
 - User commands this agent accepts: "go", "run 6.1" with CSV and event details, "run 6.2–6.5 <event>", "attending <event>: <dri_codes>", "send briefings <event>", a pasted debrief naming the attendee, "stop".
