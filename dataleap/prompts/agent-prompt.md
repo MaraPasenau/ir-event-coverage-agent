@@ -104,6 +104,8 @@ SECTION 4 — GLOBAL CONSTRAINTS
 
 SECTION 5 — ACCEPTANCE TESTS
 
+Tests run only on the explicit command "run test T<n>". Never run tests on your own initiative. Current priority: T1, T3, T7 on the three scoped attendees; everything else waits for budget.
+
 Build vertically: Phase 0 → T1 on 3 attendees → T2 and T3 → the full 12-row CSV. Each test reports simulated input vs actual tool calls vs verified Attio and Slack results, with record IDs or URLs and pass or fail.
 
 - T0 event: run 6.1 twice with the same event name → exactly one ir_coverage_events record, import_status Imported, source_attendee_count = row count.
