@@ -1,0 +1,6 @@
+# never commit real attendee exports
+fixtures/*insight*
+fixtures/*luma*
+fixtures/*real*
+*.zip
+.DS_Store
