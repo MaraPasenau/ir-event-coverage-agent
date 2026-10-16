@@ -57,29 +57,28 @@ SECTION 3 — STEPS
 
 6.5 DRI assignment. Precondition Ready for Review with fit written. Load IR DRI Routing. Write assigned_dri or candidate_dris, dri_assignment_state, dri_assignment_reason. Advance routed entries to DRI Assigned. Post one Slack summary per event run to #event-coverage: table with name, company, overall tier, DRI, open question; plus a "Needs human review" section for Needs Review and Conflict entries.
 
-6.6 Briefing. Trigger: user command "send briefings <event>", or a scheduled trigger at event_start minus 24 h in event_timezone. Demo runs carry the label [demo]. For each entry at DRI Assigned with assigned_dri set, suppressed not true, briefing_delivery_state not Sent: send_message to #event-coverage, one message per attendee, in exactly this layout:
+6.6 Briefing. Trigger: user command "send briefings <event>", or a scheduled trigger at event_start minus 24 h in event_timezone. For each entry at DRI Assigned with assigned_dri set, suppressed not true, briefing_delivery_state not Sent: send_message to #event-coverage, one message per attendee, Slack mrkdwn, exactly this layout and nothing else:
 
-EVENT COVERAGE [demo] — <event name>
-Coverage DRI: <@slack_user_id or dri_code>
-Target: <name>
-Company: <company> — <role>
-LinkedIn: <linkedin or "not provided">
-Potential
-  Gen Cap: <tier> — <one line reason with source and date>
-  DI:      <tier> — <one line reason>
-  Fund:    <tier> — <one line reason>
-Interests / Information
-  - <bullet from evidence>
-  - <bullet from evidence>
-  Sources: <evidence_urls>
-Openers
-  - <opener 1>
-  - <opener 2>
-Open question: <the single highest-value unknown>
-Attio: <coverage entry URL>
-After the event: reply in this thread, text or voice clip.
+*<name>* · <company> · <role>
+Event: <event name> · DRI: <@slack_user_id or dri_code>
 
-All three products are always shown, including Needs Review and Irrelevant, so the DRI sees the full assessment. On API success store channel and ts, set Sent; on error set Failed, stage unchanged. Advance to Pre-event Brief Ready.
+*Fit*
+<fit line>
+
+*Why*
+• <bullet 1>
+• <bullet 2>
+
+*Ask*
+• <opener>
+• <the single highest-value open question>
+
+<<coverage entry URL>|Open in Attio> · Reply in this thread after the conversation.
+
+Fit line rules: list the three products in the order Gen Cap · DI · Fund, separated by " · ". A product at Tier A/B/C is shown as "<marker> <product> <letter>" with marker 🟢 for A, 🟡 for B, 🔵 for C. A product at Irrelevant or Needs Review is shown as "⚪ <product>" with no letter and no explanation. Example: "🟢 Gen Cap A · 🟡 DI B · ⚪ Fund".
+Content rules: at most two Why bullets and two Ask bullets, each one line, no citations, no source tags, no dates, no synthetic/disclaimer wording, no hyphenated clauses. Sources and reasoning stay in Attio (evidence_urls, product_fit_reasons). Demo runs add "[demo]" after the event name only. On API success store channel and ts, set Sent; on error set Failed, stage unchanged. Advance to Pre-event Brief Ready.
+
+The event summary posted in 6.5 uses the same style: one line per attendee "<marker> *<name>* · <company> · <best product> <letter> · DRI <code>", then a "Needs review" line listing names or "none".
 
 6.7 Debrief. Trigger: a new reply in a thread whose ts matches a stored slack_thread_ts, or the user pastes a note in this chat naming the attendee. Precondition: stage Pre-event Brief Ready, Routing Ready or Promoted; a person can be debriefed more than once. If the reply is an audio clip and Phase 0 item 5 passed: fetch the file, transcribe with the built-in tool, post the transcript into the thread with "React :white_check_mark: to confirm, or reply with the corrected text", wait, then continue with the confirmed text. Write post_event_note, post_event_source_message_id, conversation_logged_at. Load IR Debrief Extraction: first create the Attio conversation note on the Person (idempotent by title), then produce the proposals draft and conversation_outcome. If the stage was Pre-event Brief Ready, advance to Conversation Logged, then Routing Ready; if it was Promoted, leave it at Promoted.
 
