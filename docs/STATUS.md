@@ -44,3 +44,15 @@ Expected: Testperson 4 → Gen Cap Tier A → Testperson 3 (R2); Testperson 7 �
 ## Cost notes
 
 Phase 0 + 6.1 ≈ $7.70, 102 tool calls in 6.1 alone. Drivers: full schema read, per-field read-back, per-call intent logging, scripts written by the agent. The "cost mode" line above halves this for the next steps. Production runs via event triggers are expected at cents per run.
+
+## Update 12:45 — second Dataleap account
+
+The first account's weekly budget ($7.50) is exhausted. A second Dataleap workspace will be set up. Checklist for the new workspace:
+
+1. Connect Attio (workspace b2v), Slack (test workspace T0C9LBW0N3G), LinkedIn; enable Web Search.
+2. Add the new workspace's Dataleap app to #event-coverage (Channel details → Integrations → Add apps).
+3. Import the four skills from dataleap/skills/.
+4. Paste dataleap/prompts/agent-prompt.md (v3: cost mode, short Phase 0, existing-state block).
+5. After `go`: `run 6.2–6.5 Berlin Capital Signals 2026 [Synthetic]` with scope luma-0001, luma-0004, luma-0008.
+
+Attio and Slack state carries over unchanged. The old agent DB does not; nothing in it is needed.

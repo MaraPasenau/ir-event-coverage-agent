@@ -10,20 +10,25 @@ Four skills are already imported into this workspace and are the rule base. Load
 
 Use DataLeap's own harness, agent database, triggers and approval patterns. Do not create a second backend, database or MCP server unless a specific capability is missing; name it first. Clay and the live Luma API are out of v1 scope.
 
-PHASE 0 — DISCOVERY (read-only, no writes)
+COST MODE (applies to every step)
 
-1. List the tools available to this agent and their operations: Attio, Slack, LinkedIn, Web Search, voice transcription, agent DB.
+The IR Attio Contract was verified against the live schema on 2026-10-16 (Phase 0 of a previous build); do not re-verify the schema. Read back once per coverage entry at the end of each step, not per field. Write one run-summary row per step to run_log, not one row per tool call. Use the lowest model tier that supports tool calls for 6.3 research. Do not write helper scripts; call the tools directly. Report deviations from expected results plus a per-entry table, nothing else. Per-entry tool budget in 6.3: 4 calls.
+
+STATE OF THE TARGET SYSTEMS (already exists, do not recreate)
+
+- Attio event record f0bc9108-2f96-416e-9e42-d09aafb4ae89 "Berlin Capital Signals 2026 [Synthetic]", import_status Imported, 12 coverage entries at stage Imported with luma_attendee_id luma-0001 … luma-0012, 11 Verified and 1 Conflict (Anna Müller, entry f878fdb4-4894-4851-a460-add5139d8a8c). Three older fixture entries on the same event carry suppressed = true; ignore them.
+- Slack channel #event-coverage C0C9WQFS78A in team T0C9LBW0N3G.
+- DRI profiles Testperson 1–3 in list ir_dri_people with product_focus, vertical_expertise and capacity set.
+
+PHASE 0 — DISCOVERY (read-only, short)
+
+1. List the tools available to this agent: Attio (create-record, update-record, add-record-to-list, update-list-entry-by-id, create-note, create-task present?), Slack (send_message, read_thread, reactions, file download), LinkedIn, Web Search, voice transcription, agent DB.
 2. Confirm the four skills above are present and readable.
-3. Attio: load IR Attio Contract and confirm every object, list and field exists with the stated slug, type and options. Report mismatches.
-4. Slack: confirm channel #event-coverage (ID C0C9WQFS78A, team T0C9LBW0N3G) is reachable for send_message and read_thread, and whether this agent can be triggered by a new message in that channel and by a reaction added to a message it posted.
-5. Slack files: confirm whether this agent can read an audio clip attached to a thread reply and pass it to the built-in voice transcription tool. If yes, voice debriefs are in scope for 6.7; if no, text only.
-6. LinkedIn: confirm what the LinkedIn tool returns for a supplied linkedin_url. Default assumption: not usable for research.
-7. Web Search: run "Lilium" investment focus and return the first result URL.
-8. Attio list behaviour: report whether list ir_event_coverage accepts two entries for the same Person with different coverage_event values. Determine this from the list's settings or Attio documentation, without writing. If a Person can appear only once per list, say so; the fallback is one coverage list per event, and I will decide before go.
-9. Attio notes: confirm create-note and search-notes-by-metadata are available to this agent.
-10. Output a capability report: tool → operation → available / missing / untested. Then stop and wait for the word go.
+3. Slack: confirm the Dataleap app is a member of C0C9WQFS78A and whether new-message and reaction-added triggers are available.
+4. Attio: list-records-in-list on ir_event_coverage filtered by coverage_event = the event record above; report the count of entries with a non-empty luma_attendee_id (expected 12).
+5. Output a short capability report, then stop and wait for go.
 
-Build vertically. After go, implement one thin end-to-end slice first: one attendee imported, identity resolved, enriched, tiered, routed, briefed in Slack, debriefed, approved, written to Attio and read back. Make every step observable: real tool calls, record IDs, persisted state, explicit errors. Do not mock an integration, skip a step silently, or invent a capability. Expand to the full CSV and the remaining tests only after the first slice passes.
+Build vertically after go: 6.2–6.5 for three attendees first (luma-0001, luma-0004, luma-0008), then briefing, debrief and approval for one of them, then the remaining entries and tests. Make every step observable: real tool calls, record IDs, explicit errors. Do not mock an integration or skip a step silently.
 
 SECTION 1 — TOOL BOUNDARIES
 
@@ -42,7 +47,7 @@ coverage_stage on the coverage entry is the single progress field. Each step run
 
 SECTION 3 — STEPS
 
-6.1 Import. Trigger: the user attaches a CSV and gives event name, Luma URL, start datetime and timezone. Columns: name (required), company, role, linkedin_url, email, luma_attendee_id, research_notes. Resolve the event in ir_coverage_events by integration_key, then luma_event_id, then name; if absent create it with name, integration_key, luma_url, event_start, event_timezone, source_mode = Approved Export, access_state = Verified, event_status = Planned, import_status = Pending, import_evidence = "CSV attached by <user> on <date>". Per row, run the identity resolution in IR Attio Contract (linkedin → email → exact-name conflict check → create) before any create. Then list-records-in-list on ir_event_coverage filtered by person and coverage_event; exists → skip; else add-record-to-list with coverage_event, luma_attendee_id, coverage_stage = Imported, identity_review_state as resolved. Finally set the event's import_status (Imported or Partial), imported_at, source_attendee_count. Output counts (rows, matched, created, conflicts, skipped) and per-row errors.
+6.1 Import. Trigger: the user attaches a CSV and gives event name, Luma URL, start datetime and timezone. For the existing synthetic event this step is already complete; re-running it must produce 0 people created and 0 new entries (test T4). Run it for new events only. Columns: name (required), company, role, linkedin_url, email, luma_attendee_id, research_notes. Resolve the event in ir_coverage_events by integration_key, then luma_event_id, then name; if absent create it with name, integration_key, luma_url, event_start, event_timezone, source_mode = Approved Export, access_state = Verified, event_status = Planned, import_status = Pending, import_evidence = "CSV attached by <user> on <date>". Per row, run the identity resolution in IR Attio Contract (linkedin → email → exact-name conflict check → create) before any create. Then list-records-in-list on ir_event_coverage filtered by person and coverage_event; exists → skip; else add-record-to-list with coverage_event, luma_attendee_id, coverage_stage = Imported, identity_review_state as resolved. Finally set the event's import_status (Imported or Partial), imported_at, source_attendee_count. Output counts (rows, matched, created, conflicts, skipped) and per-row errors.
 
 6.2 Identity confirmation. Precondition Imported. Verified entries advance to Enrichment Pending. Conflict entries: write both candidate record ids into data_gaps, keep stage Imported, list them in the run summary under "Needs human review". They do not proceed until a human resolves the conflict in Attio.
 
