@@ -56,3 +56,13 @@ The first account's weekly budget ($7.50) is exhausted. A second Dataleap worksp
 5. After `go`: `run 6.2–6.5 Berlin Capital Signals 2026 [Synthetic]` with scope luma-0001, luma-0004, luma-0008.
 
 Attio and Slack state carries over unchanged. The old agent DB does not; nothing in it is needed.
+
+## Update 17:40 — third Dataleap account (unlimited budget)
+
+Live state in Attio/Slack, which overrides the snapshot above:
+- luma-0001 (Testperson 4): stage Pre-event Brief Ready; Gen Cap A, DI B, Fund Irrelevant; DRI Testperson 3 (R2); briefing Sent; Slack thread ts 1792182075.571519 in C0C9WQFS78A. A voice clip reply from Mara is in that thread, not yet transcribed.
+- luma-0002 … luma-0012: stage Imported.
+- Event summary message posted in #event-coverage (old layout). New compact layout (6.6) applies from the next card.
+- Triggers configured on the second account do not carry over; configure again.
+
+Next: configure triggers, process the voice clip in the Testperson 4 thread (transcript → ✅ → proposal → 👍), then run 6.2–6.6 for the remaining 11 entries, then T3/T7/T9/T14.
