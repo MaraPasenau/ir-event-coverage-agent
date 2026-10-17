@@ -121,3 +121,14 @@ Known issues, ranked by what I would fix first after submission:
 6. **Durable-instruction drift.** The agent's stored instructions reached 21.8k characters through reloads. Rule added (IR Operator): commit pointer, skill versions and platform facts only, ≈3k characters; compaction still has to be triggered once.
 7. **Cost per run.** ≈$1.50 per Slack run, ≈$7.70 for a 12-row import with research. At 80 attendees × 4 research calls this needs batching and caching before it is a daily tool.
 8. **Luma API and Gmail not connected.** CSV import and mailto drafts until then (by design, see DECISIONS 25 and 31).
+
+## Update 13:50 PDT — first per-step measurement (audio run 238a04af)
+
+Audio run, trigger to posted transcript, 4.5 min wall clock (19:57:36–20:02:09 UTC):
+- native transcription: ~63 s for a 20-second clip (1 call; platform)
+- instrumented phases: ~69 s, 166 tool calls, of which 134 single-statement SQL calls (event handling 43, interpretation 44, publication 41, resolution 20, continuation 17)
+- gaps between phases (model turns): ~100 s, after durable instructions were already cut to 2,711 characters
+
+Conclusion for known issue #1/#2: the lever is call count, not instruction size. Target for the audio path: ≤ 30 calls (config, DRI and entry read once into memory; one JSON state row per checkpoint; one Slack message per transcript). Transcription latency is the platform's. This run also contained two recovered adapter errors, so it is an upper bound, not a clean baseline.
+
+Also fixed today: normalizer produced "take → deck" via metaphone on a 4-letter word (23f49ce: phonetic match needs ≥ 5 letters and ratio ≥ 60; evals 32/32).
