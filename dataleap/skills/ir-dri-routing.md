@@ -10,11 +10,11 @@ Attio list `ir_dri_people` is authoritative. Read it at the start of every run a
 
 | dri_code | display_name | product_focus | vertical_expertise | capacity | slack_user_id | slack_channel_id | eligible today |
 |---|---|---|---|---|---|---|---|
-| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not mapped | C0C9J6YJ2MD (#coverage-mara) | no, until slack_user_id is set |
-| Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | C0C9TB8LKR9 (#coverage-leonie) | yes |
-| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | C0CA1F1TV17 (#coverage-tara) | yes |
+| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not mapped | #targets-mara (resolve ID by name) | no, until slack_user_id is set |
+| Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | #targets-leonie C0CAUDMH80Y | yes |
+| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #targets-tara (resolve ID by name) | yes |
 
-`slack_channel_id`: read Attio attribute `slack_channel_id` on the list entry if it exists; otherwise use the value from this table. Each DRI channel is private with exactly two members, the DRI and the Dataleap bot. Briefings, debriefs, transcripts and proposals go there. `#event-coverage` (C0C9WQFS78A) carries the event summary only.
+`slack_channel_id`: read Attio attribute `slack_channel_id` on the list entry if it exists; otherwise resolve the channel by name (`#targets-<firstname>`) once per run and store the ID in `dri_config`. The DRI channels are **public** channels with two human-relevant members, the DRI and the Dataleap bot; the Dataleap Slack connection cannot read, post or trigger in private channels, so the former private `#coverage-*` channels (C0C9J6YJ2MD, C0C9TB8LKR9, C0CA1F1TV17) are retired and never used. Briefings, debriefs, transcripts and proposals go to `#targets-<firstname>`. `#event-coverage` (C0C9WQFS78A) carries the event summary only. Bot user: U0C9X4ZUJF4; messages authored by it are never treated as debriefs.
 
 ## Eligibility (one definition)
 A row is eligible when all of: `profile_status = Confirmed`, `product_focus ≠ ∅`, `vertical_expertise ≠ ∅`, `slack_user_id ≠ ∅`. Draft and Inactive rows are never routed. A Confirmed row without `slack_user_id` is reported once per run in the summary ("<display_name>: no Slack ID, not routable") and skipped. No other Attio member or select code is ever used as a DRI.
@@ -22,7 +22,7 @@ A row is eligible when all of: `profile_status = Confirmed`, `product_focus ≠ 
 ## Onboarding a new DRI
 1. Trigger: user command `add dri <Name>, <email>, <products>, <verticals>`, or a Person added to `ir_dri_people` by a human.
 2. The agent resolves the Person by `email_addresses` (create if absent), adds the list entry with `profile_status = Draft`, `dri_code = DRI-<nnn>` (next free number ≥ 004; codes never reuse an attendee name), `product_focus`, `vertical_expertise`, `coverage_capacity = 10`, `profile_evidence = "added by <user> via agent, <date>"`. The agent never writes Confirmed or Inactive.
-3. `slack_user_id`: look up the Slack user by email; write it if exactly one match. Channel: if the Slack tool can create a private channel, create `#coverage-<firstname>`, invite the DRI, write the channel ID; otherwise post the missing items.
+3. `slack_user_id`: look up the Slack user by email; write it if exactly one match. Channel: if the Slack tool can create a private channel, create the public channel `#targets-<firstname>`, invite the DRI, write the channel ID; otherwise post the missing items.
 4. Missing fields after step 3 → one message in `#event-coverage`: "New DRI profile for <Name> is incomplete. Missing: <fields>. Set them in Attio and change the status to Confirmed."
 5. A human sets `profile_status = Confirmed`. Eligible from the next run. `Inactive` removes a DRI from routing without deleting history.
 

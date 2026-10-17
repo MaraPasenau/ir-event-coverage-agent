@@ -76,3 +76,11 @@ Consequences for the live state:
 - Testperson 1 is not eligible until `slack_user_id` is set in Attio; DI attendees route via R3/R4 to Leonie or Tara. The 9 briefings already sent stay as they are.
 - Optional Attio attributes `slack_channel_id` (text) and `attending_events` (multi record-ref → ir_coverage_events) on list `ir_dri_people` are not created yet; the agent falls back to `dri_config`.
 - The Dataleap workspace must re-import the four skills (IR Product Rules is now "demo-v2") and receive the new prompt before the next run.
+
+## Update 21:15 — Slack private channels not supported
+
+Dataleap reported: the shared Slack connection supports public channels only; private-channel reads, posts and triggers require a personal Slack connection or a custom Slack app. Decision 25: public `#targets-<firstname>` channels. Created so far: `#targets-leonie` C0CAUDMH80Y (bot U0C9X4ZUJF4 and Leonie U0C9LBXNZSS invited). `#targets-tara` and `#targets-mara` still to be created in the Slack UI (public, add @Dataleap and the DRI). Then re-import `ir-dri-routing.md` and `ir-debrief-extraction.md`, reload the prompt at the new commit, `go`.
+
+Production upgrade path: a custom Slack app with `channels:history`, `groups:history`, `chat:write`, `reactions:read`, `files:read`, `users:read.email` restores private channels; the skill text does not change, only the channel IDs.
+
+Phase 0 (3rd account, after demo-v2 import) also reported: existing agent DB tables differ from the new contract (reconcile, do not delete history); tiers in Attio carry no demo-v2 stamp; `slack_channel_id` / `attending_events` attributes absent (fallback active).

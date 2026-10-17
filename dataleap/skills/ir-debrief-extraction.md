@@ -6,7 +6,7 @@ description: How to turn a DRI's post-conversation message (text or confirmed tr
 # IR Debrief Extraction
 
 ## Input
-`post_event_note`: the raw text a DRI posted in their private coverage channel (top-level or as a thread reply), or the transcript the DRI confirmed with ✅ or 👍. Never extract from an unconfirmed transcript.
+`post_event_note`: the raw text a DRI posted in their #targets channel (top-level or as a thread reply), or the transcript the DRI confirmed with ✅ or 👍. Never extract from an unconfirmed transcript.
 
 Resolution, in this order:
 1. **Event**: the DRI's events with `briefing_delivery_state = Sent` and `event_start` within the last 14 days or the next 7 days. Exactly one → use it. Several → ask once: "Which event: <names>?" and wait.
