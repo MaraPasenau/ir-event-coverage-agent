@@ -8,7 +8,10 @@
       "gen cup",
       "gen gap",
       "genkap",
-      "jenkap"
+      "jenkap",
+      "generational capital",
+      "generation capital",
+      "general capital"
     ],
     "DI Angel Investment": [
       "di",
@@ -49,6 +52,11 @@
     "deck": [
       "deg",
       "dack"
+    ],
+    "Testperson": [
+      "test person",
+      "test-person",
+      "testperson"
     ]
   }
 }

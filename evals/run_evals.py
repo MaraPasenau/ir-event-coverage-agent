@@ -118,6 +118,10 @@ t, ch = normalize("Spoke with Testperson 4, very interested in Gen Cap, wants an
 check("ASR: clean English transcript unchanged except canonical casing", ch == [] and "intro call next week" in t, t)
 t, ch = normalize("Nice chat with Testperson eleven, maybe later.", ["Testperson 11"])
 check("ASR: partial names left to the LLM resolver", ch == [], t)
+t, ch = normalize("Talked to test person 11, nice. I will send the generational capital deck, but not fund.", ["Testperson 11"])
+check("ASR: 'test person' → Testperson, 'generational capital' → Gen Cap", "Testperson 11" in t and "Gen Cap deck" in t, t)
+t, ch = normalize("She runs the general partner programme and the capital calls.", ["Testperson 4"])
+check("ASR: 'general partner … capital' is not Gen Cap", ch == [], t)
 
 print(f"\n{len(FAILS)} failure(s)")
 sys.exit(1 if FAILS else 0)

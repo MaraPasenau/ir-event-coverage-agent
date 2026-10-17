@@ -106,3 +106,18 @@ First live post-event run (Tara, Testperson 4): voice → transcript (German, "J
 Platform facts learned: Dataleap transcription works only as a native tool, not via programmatic tool calling (HTTP 400 file-output tools unavailable); skill import strips front matter beyond name/description (hence the "Version …" body line); skill IDs change on re-import (agent must load skills by name); the agent's durable instructions grow on every reload (21.8k chars) and need compaction after the Loom.
 
 Open before the Loom: T3 rejection as Mara (Testperson 11), ✅ on the follow-up draft as Tara, config/workspace.yaml + docs/SETUP.md, Slack cleanup (archive #coverage-*, rename main account to Tara).
+
+## Update 12:40 PDT — second live run, known issues
+
+Second post-event run on the same entry (Tara, Testperson 4, 03:34–11:35 PDT): voice → transcript → "No" read as "transcript wrong" → "What should it say?" → second clip → confirmation → case-B proposal (Nurture, deck task) → "Yes" → Done + follow-up draft. Worked end to end; the approval run took ~10 minutes.
+
+Known issues, ranked by what I would fix first after submission:
+
+1. **No per-step timing.** `runs` records start, end and checkpoint; it does not record per-step durations, so the 2–4 minutes per Slack run cannot be attributed (model turns vs. Slack/Attio/DB latency). First task: duration per `run_log` row, then decide between fewer tool calls and smaller context.
+2. **One agent for every path.** A "Yes" on a proposal loads the same instruction set as an 80-row import. Production shape: a lean Slack handler (transcribe, glossary, post, register; approve, execute, read back) and a separate research path. Partly mitigated by the token-economy rules in IR Operator 2026-10-17.2.
+3. **Tests are graded by the agent that runs them.** T0–T25 run on command inside the agent. An external check exists only for the rule set (`evals/run_evals.py`). Next: a read-only verifier that compares Attio and Slack state against expected fixtures.
+4. **Single-attendee resolution overrode a named person.** Tara said "Testperson 11" (Mara's attendee); the agent resolved to Testperson 4 without asking. Fixed in IR Debrief Extraction 2026-10-17.7 / prompt 6.7: an explicit different name always triggers one question.
+5. **Glossary gaps.** "generational capital", "test person" added (evals 29–30). The glossary grows from real transcripts; a review of `Changed:` lines per week is the maintenance loop.
+6. **Durable-instruction drift.** The agent's stored instructions reached 21.8k characters through reloads. Rule added (IR Operator): commit pointer, skill versions and platform facts only, ≈3k characters; compaction still has to be triggered once.
+7. **Cost per run.** ≈$1.50 per Slack run, ≈$7.70 for a 12-row import with research. At 80 attendees × 4 research calls this needs batching and caching before it is a daily tool.
+8. **Luma API and Gmail not connected.** CSV import and mailto drafts until then (by design, see DECISIONS 25 and 31).

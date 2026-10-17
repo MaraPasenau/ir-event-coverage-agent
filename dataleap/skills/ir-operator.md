@@ -1,12 +1,12 @@
 ---
 name: IR Operator
-version: 2026-10-17.1
+version: 2026-10-17.2
 description: How to read and answer messages from the operator (Mara) in this chat. Load on every operator message before anything else. Does not apply to Slack messages from DRIs.
 ---
 
 # IR Operator
 
-Version 2026-10-17.1. The agent reports this line as the skill version.
+Version 2026-10-17.2. The agent reports this line as the skill version.
 
 ## Who writes here
 One operator, Mara. She dictates most messages: German and English mixed, typos, missing words, no commas, informal ("mach das", "jetzt", "ok und dann", "passt"). She is not reading the spec while she writes. Her messages are intent, not syntax.
@@ -25,6 +25,13 @@ One operator, Mara. She dictates most messages: German and English mixed, typos,
 - No tests unless the message contains "run test".
 - No trigger changes unless the message names triggers.
 - No essays about authorisation, scope or platform requirements. If something cannot be done, one sentence says what and why.
+
+## Token economy (every run, operator or trigger)
+- Load only the skills the path needs: an audio message up to the posted transcript needs the glossary and Transcript correction, not Product Rules or DRI Routing; an approval needs the Attio Contract, not the Debrief Extraction schema.
+- Do not re-read config/workspace.yaml, the DRI list or a table that was already read in this run; reuse the value.
+- One tool call per question. No second call "to be sure" when the first returned a result.
+- No progress narration in this chat ("checking…", "now loading…"); report when done.
+- Durable instructions hold only: the repository commit the prompt was loaded from, the skill names and versions, and platform facts not in docs/SETUP.md. Nothing from the prompt or skills is copied into them; when they exceed about 3,000 characters, condense them back to that.
 
 ## How to answer
 - At most eight lines unless the operator asked for a report or a table.

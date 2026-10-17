@@ -14,9 +14,10 @@ Built in October 2026 as the application task for Dataleap. The agent runs insid
 | see what it does | `docs/LOOM-SCRIPT.md` (7-minute walkthrough) |
 | set it up in a new workspace | `docs/SETUP.md`, then `config/workspace.yaml` |
 | understand why a rule is the way it is | `docs/DECISIONS.md` (34 decisions with rejected alternatives) |
-| check the rules are well-defined | `python3 -I evals/run_evals.py` (28 checks: tier function total over the signal space, routing deterministic, transcript normalizer guarded) |
+| check the rules are well-defined | `python3 -I evals/run_evals.py` (30 checks: tier function total over the signal space, routing deterministic, transcript normalizer guarded) |
 | know where the build stands | `docs/STATUS.md` |
 | see what was audited and fixed | `docs/RULE-AUDIT.md` |
+| see what is still wrong, ranked | `docs/STATUS.md`, section "known issues" |
 
 ## Layout
 

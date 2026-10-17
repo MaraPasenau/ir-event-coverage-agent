@@ -1,19 +1,19 @@
 ---
 name: IR Debrief Extraction
-version: 2026-10-17.6
+version: 2026-10-17.7
 description: How to turn a DRI's post-conversation message (text or confirmed transcript) into a conversation note, a structured proposal draft and a conversation_outcome. Use in the debrief and proposal steps.
 ---
 
 # IR Debrief Extraction
 
-Version 2026-10-17.6. The agent reports this line as the skill version.
+Version 2026-10-17.7. The agent reports this line as the skill version.
 
 ## Input
 `post_event_note`: the raw text a DRI posted in their #targets channel (top-level or as a thread reply), or the transcript the DRI confirmed with ✅ or 👍. Never extract from an unconfirmed transcript.
 
 Resolution, in this order:
 1. **Event**: the DRI's events with `briefing_delivery_state = Sent` and `event_start` within the last 14 days or the next 7 days. Exactly one → use it. Several → ask once: "Which event: <names>?" and wait.
-2. **Attendee**: the attendees in that DRI's briefing for the event. If the DRI has exactly one attendee for that event → use it, never ask. Otherwise identify the person the message is about with judgement: full name, first name, surname, nickname, company ("the Weber Stiftung guy"), role, or a pronoun that can only refer to one candidate; compare normalized (casefold, diacritics stripped). Exactly one attendee identified → use it. None or several → ask once in the thread: "Which person is this about: <names>?" (register the question in slack_messages, kind question, with the candidate list) and wait. Never guess.
+2. **Attendee**: the attendees in that DRI's briefing for the event. If the DRI has exactly one attendee for that event → use it without asking, **unless the message names a person who is not that attendee** (a different attendee name, a name covered by another DRI, or a name not on the event at all): then ask once in the thread, "You mentioned <name>; <she is covered by <DRI> | she is not on this event>. Did you mean <attendee>?", register the question (kind question, candidates = [attendee]) and wait; never resolve silently to the only attendee over an explicit different name. Otherwise identify the person the message is about with judgement: full name, first name, surname, nickname, company ("the Weber Stiftung guy"), role, or a pronoun that can only refer to one candidate; compare normalized (casefold, diacritics stripped). Exactly one attendee identified → use it. None or several → ask once in the thread: "Which person is this about: <names>?" (register the question in slack_messages, kind question, with the candidate list) and wait. Never guess.
 3. **Answer to a question**: a reply by the DRI in the thread of a registered question message is an answer, never a new debrief. Classify the reply's intent with judgement, in any language and register; the words below are illustrations, not an allowlist:
    - names or clearly points to one candidate (full name, first name, surname, "the one from Müller FO", "sie" / "he" when exactly one candidate matches the pronoun) → that attendee;
    - confirms ("yes", "ja", "genau", "jep", "correct", "that one", a 👍 or ✅ reaction) when the question listed exactly one candidate → that candidate;
