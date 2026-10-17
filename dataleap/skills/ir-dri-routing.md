@@ -6,13 +6,20 @@ description: Rules for assigning a coverage DRI to an event attendee. Use in the
 # IR DRI Routing
 
 ## Eligible DRIs
-Read list `ir_dri_people` at the start of every run and mirror eligible rows into agent DB table `dri_config`. A row is eligible when `profile_status = Confirmed` and `dri_code` starts with "Testperson". Current rows:
+Read list `ir_dri_people` at the start of every run and mirror eligible rows into agent DB table `dri_config`. A row is eligible when `profile_status = Confirmed`, `product_focus` has at least one value and `vertical_expertise` has at least one value. Rows at Draft or Inactive are never routed. Only the people in this list can be DRIs; no other Attio member or select code is ever used. Current rows:
 
 | dri_code | display_name | product_focus | vertical_expertise | coverage_capacity | slack_user_id | email |
 |---|---|---|---|---|---|---|
 | Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not yet mapped | mara.sofi.pasenau@gmail.com |
 | Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | m.pasenau@icloud.com |
 | Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | mara.pasenau@b2venture.vc |
+
+## Onboarding a new DRI
+1. The user says `add dri <Name>, <email>, <products>, <verticals>` or a Person is added to `ir_dri_people` manually.
+2. The agent creates or finds the Person, adds the list entry with `profile_status = Draft`, the next free `dri_code`, `product_focus`, `vertical_expertise`, `coverage_capacity = 10`, and `profile_evidence` = who requested it and when.
+3. If any of product_focus, vertical_expertise or slack_user_id is missing, the agent posts once in #event-coverage: "New DRI profile for <Name> is incomplete. Missing: <fields>. Set them in Attio and change the status to Confirmed." and does not route to that DRI.
+4. A human sets `profile_status = Confirmed`. From the next run the DRI is eligible.
+5. `profile_status = Inactive` removes a DRI from routing without deleting history.
 
 dri_code is the internal key used in Attio selects and routing. display_name is what appears in Slack and in Attio notes; never show a Testperson code to a human. Emails are test delivery addresses, not identity proof; the agent never sends email.
 
