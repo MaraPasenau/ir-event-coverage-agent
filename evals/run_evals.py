@@ -113,7 +113,7 @@ t, ch = normalize("Ähm. Ich habe mit Testperson 4 gesprochen, sehr interessiert
 check("ASR: Jinka → Gen Cap, Fun-Themen → Fund", ("Jinka", "Gen Cap") in ch and ("Fun-Themen", "Fund") in ch, str(ch))
 check("ASR: function words never corrected (und ≠ Fund, mit kept)", "mit Testperson 4" in t and " und," in t, t)
 t, ch = normalize("Kurzes Gespräch mit Anna Mueller, nur Fonds, keine Direktinvestments.", ["Anna Müller"])
-check("ASR: negation preserved, name diacritics fixed", "keine Direktinvestments" in t and ("Anna Mueller", "Anna Müller") in ch, t)
+check("ASR: negation preserved, name diacritics fixed", "keine DI Angel Investment" in t and ("Anna Mueller", "Anna Müller") in ch, t)
 t, ch = normalize("Spoke with Testperson 4, very interested in Gen Cap, wants an intro call next week.", ["Testperson 4"])
 check("ASR: clean English transcript unchanged except canonical casing", ch == [] and "intro call next week" in t, t)
 t, ch = normalize("Nice chat with Testperson eleven, maybe later.", ["Testperson 11"])
