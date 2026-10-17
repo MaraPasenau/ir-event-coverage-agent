@@ -95,7 +95,7 @@ On failure the stage stays unchanged and the error goes to `run_log`.
 
 ## DRI profiles — list `ir_dri_people`, parent People
 Fields: `dri_code` (text), `profile_status` (status: Draft, Confirmed, Inactive), `product_focus` (multi-select: Fund, DI Angel Investment, Gen Cap), `vertical_expertise` (multi-select: the 14 coverage verticals + Deep Tech, Quantum, Sustainability), `slack_team_id`, `slack_user_id` (text), `workspace_member` (actor-ref), `relationship_people` (multi record-ref → People), `backup_dri` (record-ref → People), `coverage_capacity` (number), `profile_evidence` (text), `last_confirmed_at` (timestamp), plus `languages`, `geography_expertise`, `stage_expertise`, `conflict_policy`, `minimum_ticket`, `maximum_ticket` (unused in v1).
-Optional attributes, used when present (a human adds them in the Attio UI; the agent falls back to `dri_config` otherwise): `slack_channel_id` (text), `attending_events` (multi record-ref → ir_coverage_events).
+`slack_channel_id` (text) and `attending_events` (multi record-ref → ir_coverage_events) exist since 2026-10-17 and are populated for Testperson 1–3; they are the source for channel and attendance. The `dri_config` fallback applies only if a row has them empty.
 Agent writes (onboarding only): `add-record-to-list`, `update-list-entry-by-id` for `dri_code`, `profile_status = Draft`, `product_focus`, `vertical_expertise`, `coverage_capacity`, `profile_evidence`, `slack_user_id`, `slack_channel_id`. The agent never writes Confirmed, Inactive, `workspace_member` or `relationship_people`.
 Eligibility is defined in IR DRI Routing only.
 

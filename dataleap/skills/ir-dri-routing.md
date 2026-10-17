@@ -14,7 +14,7 @@ Attio list `ir_dri_people` is authoritative. Read it at the start of every run a
 | Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | #targets-leonie C0CAUDMH80Y | yes |
 | Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #targets-tara C0CA43FNPGC | yes |
 
-`slack_channel_id`: read Attio attribute `slack_channel_id` on the list entry if it exists; otherwise resolve the channel by name (`#targets-<firstname>`) once per run and store the ID in `dri_config`. The DRI channels are **public** channels with two human-relevant members, the DRI and the Dataleap bot; the Dataleap Slack connection cannot read, post or trigger in private channels, so the former private `#coverage-*` channels (C0C9J6YJ2MD, C0C9TB8LKR9, C0CA1F1TV17) are retired and never used. Briefings, debriefs, transcripts and proposals go to `#targets-<firstname>`. `#event-coverage` (C0C9WQFS78A) carries the event summary only. Bot user: U0C9X4ZUJF4; messages authored by it are never treated as debriefs.
+`slack_channel_id`: read Attio attribute `slack_channel_id` on the list entry (populated for all three DRIs); only if empty, resolve the channel by name (`#targets-<firstname>`) and store the ID in `dri_config`. The DRI channels are **public** channels with two human-relevant members, the DRI and the Dataleap bot; the Dataleap Slack connection cannot read, post or trigger in private channels, so the former private `#coverage-*` channels (C0C9J6YJ2MD, C0C9TB8LKR9, C0CA1F1TV17) are retired and never used. Briefings, debriefs, transcripts and proposals go to `#targets-<firstname>`. `#event-coverage` (C0C9WQFS78A) carries the event summary only. Bot user: U0C9X4ZUJF4; messages authored by it are never treated as debriefs.
 
 ## Eligibility (one definition)
 A row is eligible when all of: `profile_status = Confirmed`, `product_focus ≠ ∅`, `vertical_expertise ≠ ∅`, `slack_user_id ≠ ∅`. Draft and Inactive rows are never routed. A Confirmed row without `slack_user_id` is reported once per run in the summary ("<display_name>: no Slack ID, not routable") and skipped. No other Attio member or select code is ever used as a DRI.
@@ -32,7 +32,7 @@ A row is eligible when all of: `profile_status = Confirmed`, `product_focus ≠ 
 Overlap is computed on the canonical set of `preferred_verticals`. Map `vertical_expertise` first: Deep Tech → Industrial Tech, Quantum → AI, Sustainability → ESG. `Other` and `Unknown` are removed from both sides before comparison and never count as a match.
 
 ## Attendance
-Per event. Source: Attio attribute `attending_events` (multi record-ref on the `ir_dri_people` entry) if it exists; otherwise the user command `attending <event>: Mara, Tara` stored in `dri_config`. Default when neither is set: all eligible DRIs attend. A DRI not attending is skipped by every rule for that event.
+Per event. Source: Attio attribute `attending_events` (multi record-ref on the `ir_dri_people` entry, populated); the user command `attending <event>: Mara, Tara` stored in `dri_config`. Default when neither is set: all eligible DRIs attend. A DRI not attending is skipped by every rule for that event.
 
 ## Capacity
 Before each assignment: count the DRI's entries for this event at stages DRI Assigned or Pre-event Brief Ready, plus assignments made earlier in this run. If the count ≥ `coverage_capacity`, the DRI is not a candidate for this entry.

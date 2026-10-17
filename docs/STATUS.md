@@ -88,3 +88,5 @@ Phase 0 (3rd account, after demo-v2 import) also reported: existing agent DB tab
 Channel IDs: #targets-mara C0C9YDQ3HML, #targets-leonie C0CAUDMH80Y, #targets-tara C0CA43FNPGC (all public, bot U0C9X4ZUJF4 member). Mara channel: Mara has no Slack user yet.
 
 Testperson 1 (Mara) slack_user_id = U0C9U823G8K written to Attio and read back; all three DRIs eligible. Second new Slack user "Mara Pasenau" U0CA45L5VUL (mara.pasenau@gmail.com) exists but is not mapped to anything.
+
+Attio attributes `slack_channel_id` and `attending_events` created on `ir_dri_people` (2026-10-17) and populated for Testperson 1–3 (channels C0C9YDQ3HML / C0CAUDMH80Y / C0CA43FNPGC, event f0bc9108). Read back verified.
