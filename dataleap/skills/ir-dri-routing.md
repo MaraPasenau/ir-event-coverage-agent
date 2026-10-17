@@ -10,7 +10,7 @@ Attio list `ir_dri_people` is authoritative. Read it at the start of every run a
 
 | dri_code | display_name | product_focus | vertical_expertise | capacity | slack_user_id | slack_channel_id | eligible today |
 |---|---|---|---|---|---|---|---|
-| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not mapped | #targets-mara C0C9YDQ3HML | no, until slack_user_id is set |
+| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | U0C9U823G8K | #targets-mara C0C9YDQ3HML | yes |
 | Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | #targets-leonie C0CAUDMH80Y | yes |
 | Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #targets-tara C0CA43FNPGC | yes |
 

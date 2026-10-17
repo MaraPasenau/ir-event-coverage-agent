@@ -86,3 +86,5 @@ Production upgrade path: a custom Slack app with `channels:history`, `groups:his
 Phase 0 (3rd account, after demo-v2 import) also reported: existing agent DB tables differ from the new contract (reconcile, do not delete history); tiers in Attio carry no demo-v2 stamp; `slack_channel_id` / `attending_events` attributes absent (fallback active).
 
 Channel IDs: #targets-mara C0C9YDQ3HML, #targets-leonie C0CAUDMH80Y, #targets-tara C0CA43FNPGC (all public, bot U0C9X4ZUJF4 member). Mara channel: Mara has no Slack user yet.
+
+Testperson 1 (Mara) slack_user_id = U0C9U823G8K written to Attio and read back; all three DRIs eligible. Second new Slack user "Mara Pasenau" U0CA45L5VUL (mara.pasenau@gmail.com) exists but is not mapped to anything.
