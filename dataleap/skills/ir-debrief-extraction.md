@@ -19,6 +19,7 @@ Resolution, in this order:
    After resolution, continue with the original message as `post_event_note`.
 4. **Language**: German and English debriefs are both accepted; extraction maps German phrasing to the same polarities ("kein Interesse an Fonds" → Fund declined; "will nächste Woche telefonieren" → next_step call next week). Notes and proposals are written in English.
 5. Store `event_record_id` and `coverage_entry_id` on the proposal row.
+6. **After promotion**: a new DRI message in a thread whose proposal is already executed is not ignored. Under the follow-up message → a revision (see Follow-up). Anywhere else in that thread, or top-level → a new debrief for the same attendee (second conversation or addition; stage stays Promoted, a new note and a new proposal row). A greeting or a message with no debrief content ("Hello", "test") gets one short reply ("Here when you have a debrief; name the person and I'll take it from there.") and no further action; the same thread is not answered again for such messages within 24 h.
 
 ## Transcript correction (voice only, before the confirmation request)
 1. If the transcription tool accepts a vocabulary or prompt parameter, pass: the three product names, "intro call", "family office", the DRI's attendee names for the event, and the DRI display names. Check once in Phase 0 whether the parameter exists.
@@ -111,7 +112,7 @@ Shape, first person of the DRI, 60–110 words, plain sentences:
 2. The agreed next step as a proposal with a time frame ("I'll send over the Gen Cap material this week"; "would Tuesday or Wednesday next week work for a 30-minute call?").
 3. If `requested_materials` is non-empty: name what will be sent, nothing else.
 4. Sign-off with the DRI's first name.
-Rules: no amounts, no ticket sizes, no fund performance, no promises not in the debrief; no exclamation marks; subject line for email = "<event short name>: next step" (e.g. "Berlin Capital Signals: next step"). Outcome No Fit → no draft (case C never reaches 6.9). Nurture with a next_step (case B) → a shorter 40–70 word version: thanks, the one thing agreed, sign-off.
+Rules: no amounts, no ticket sizes, no fund performance, no promises not in the debrief; no exclamation marks; no sentences about the email or the process itself ("I've noted that as our next step", "I'll keep this focused"), no stock gratitude ("I appreciated the chance to connect"); one concrete reference from the conversation, the next step with a time, sign-off, nothing else; subject line for email = "<event short name>: next step" (e.g. "Berlin Capital Signals: next step"). Outcome No Fit → no draft (case C never reaches 6.9). Nurture with a next_step (case B) → a shorter 40–70 word version: thanks, the one thing agreed, sign-off.
 Channel selection and task handling are specified in the agent prompt, 6.9.
 
 ### Revising and closing a follow-up
