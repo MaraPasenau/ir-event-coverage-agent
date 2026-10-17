@@ -66,3 +66,13 @@ Live state in Attio/Slack, which overrides the snapshot above:
 - Triggers configured on the second account do not carry over; configure again.
 
 Next: configure triggers, process the voice clip in the Testperson 4 thread (transcript → ✅ → proposal → 👍), then run 6.2–6.6 for the remaining 11 entries, then T3/T7/T9/T14.
+
+## Update 21:00 — rule audit applied (demo-v2)
+
+`docs/RULE-AUDIT.md` lists the findings. All four skills and the prompt were rewritten accordingly; `rules/tier.py` and `rules/route.py` are reference implementations, `evals/run_evals.py` passes 23/23 (totality of the tier function, B/C disjoint, determinism, R2 iteration, capacity, escalation).
+
+Consequences for the live state:
+- Tiers currently in Attio were computed under demo-v1 (e.g. Testperson 4 DI = Tier B; demo-v2 gives Tier C for one core signal without booster). Either accept v1 tiers for this event or clear `proposed_overall_tier` on the 12 entries and rerun 6.4 (`run test T17` afterwards).
+- Testperson 1 is not eligible until `slack_user_id` is set in Attio; DI attendees route via R3/R4 to Leonie or Tara. The 9 briefings already sent stay as they are.
+- Optional Attio attributes `slack_channel_id` (text) and `attending_events` (multi record-ref → ir_coverage_events) on list `ir_dri_people` are not created yet; the agent falls back to `dri_config`.
+- The Dataleap workspace must re-import the four skills (IR Product Rules is now "demo-v2") and receive the new prompt before the next run.

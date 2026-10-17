@@ -4,6 +4,10 @@ One Dataleap agent for a VC investor-relations team. Pre-event: attendee export 
 
 Built as a demo for Dataleap (application task). The agent runs inside Dataleap; this repo holds everything needed to rebuild, extend or audit it.
 
+## Rules as code
+
+`rules/tier.py` and `rules/route.py` implement the tier function and routing rules exactly as written in the skills; `python3 -I evals/run_evals.py` proves totality and determinism. The Dataleap agent applies the skill text; the code is the oracle for T16/T17.
+
 ## Layout
 
 ```
