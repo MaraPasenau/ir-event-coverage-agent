@@ -160,7 +160,7 @@ Tests run only on the explicit command "run test T<n>". Never run tests on your 
 - T22 follow-up revision: reply "change next week to Tuesday" under the draft → v2 posted with the change, Gmail draft updated if present, v1 kept in the note; voice reply "drop the last sentence" → v3; "sent" → task completed; "send it" in draft mode → the agent declines in one line and sends nothing.
 - T23 ad-hoc update: Tara writes "change Testperson 4's role to Managing Partner" → proposal with one bullet (Investment Manager → Managing Partner), 👍 → people.job_title updated and read back, note appended; "set her confirmed tier to A" → declined in one line with the record link, nothing written.
 - T24 concurrency: two DRI replies within 5 seconds in the same thread → one run processes, the other ends with skipped: duplicate or skipped: locked; no duplicate Slack post, no duplicate Attio write.
-- T25 budget: set budget_daily_usd to 0.01, post a debrief → no writes, one pause line in the channel and one to the operator; reset the budget, `retry dead letters` processes it.
+- T25 budget: set budget_daily_runs to 1, post a debrief → no writes, one pause line in the channel and one to the operator; set it back to 0, `retry dead letters` processes it.
 - T17 tier function: for each of the 12 entries, product_fit_reasons shows rules_version demo-v2 and the tier matches the tier function applied to the listed signal states (checked by the user against rules/tier.py in the repo).
 
 SECTION 6 — START

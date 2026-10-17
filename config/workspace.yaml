@@ -60,8 +60,8 @@ vertical_map:                      # DRI vertical vocabulary → attendee vertic
 
 settings:                          # mirrored into agent DB `settings`
   followup_send_mode: draft        # draft | send_on_explicit
-  budget_daily_usd: 25
-  budget_daily_runs: 60            # used when the platform exposes no per-run cost
+  budget_daily_usd: 0              # 0 = disabled; only meaningful once the platform exposes per-run cost
+  budget_daily_runs: 0             # 0 = no run limit; set a number to pause the agent after that many runs per day
   photo_in_digest: true
   briefing_trigger_time: "08:00"   # daily, workspace timezone; events starting within 36 h
   lock_ttl_minutes: 10
