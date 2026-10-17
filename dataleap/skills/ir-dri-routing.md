@@ -10,9 +10,9 @@ Attio list `ir_dri_people` is authoritative. Read it at the start of every run a
 
 | dri_code | display_name | product_focus | vertical_expertise | capacity | slack_user_id | slack_channel_id | eligible today |
 |---|---|---|---|---|---|---|---|
-| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not mapped | #targets-mara (resolve ID by name) | no, until slack_user_id is set |
+| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not mapped | #targets-mara C0C9YDQ3HML | no, until slack_user_id is set |
 | Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | #targets-leonie C0CAUDMH80Y | yes |
-| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #targets-tara (resolve ID by name) | yes |
+| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #targets-tara C0CA43FNPGC | yes |
 
 `slack_channel_id`: read Attio attribute `slack_channel_id` on the list entry if it exists; otherwise resolve the channel by name (`#targets-<firstname>`) once per run and store the ID in `dri_config`. The DRI channels are **public** channels with two human-relevant members, the DRI and the Dataleap bot; the Dataleap Slack connection cannot read, post or trigger in private channels, so the former private `#coverage-*` channels (C0C9J6YJ2MD, C0C9TB8LKR9, C0CA1F1TV17) are retired and never used. Briefings, debriefs, transcripts and proposals go to `#targets-<firstname>`. `#event-coverage` (C0C9WQFS78A) carries the event summary only. Bot user: U0C9X4ZUJF4; messages authored by it are never treated as debriefs.
 

@@ -84,3 +84,5 @@ Dataleap reported: the shared Slack connection supports public channels only; pr
 Production upgrade path: a custom Slack app with `channels:history`, `groups:history`, `chat:write`, `reactions:read`, `files:read`, `users:read.email` restores private channels; the skill text does not change, only the channel IDs.
 
 Phase 0 (3rd account, after demo-v2 import) also reported: existing agent DB tables differ from the new contract (reconcile, do not delete history); tiers in Attio carry no demo-v2 stamp; `slack_channel_id` / `attending_events` attributes absent (fallback active).
+
+Channel IDs: #targets-mara C0C9YDQ3HML, #targets-leonie C0CAUDMH80Y, #targets-tara C0CA43FNPGC (all public, bot U0C9X4ZUJF4 member). Mara channel: Mara has no Slack user yet.

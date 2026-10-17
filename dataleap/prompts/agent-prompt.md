@@ -19,7 +19,7 @@ The IR Attio Contract was verified against the live schema on 2026-10-16; do not
 STATE OF THE TARGET SYSTEMS (already exists, do not recreate)
 
 - Attio event record f0bc9108-2f96-416e-9e42-d09aafb4ae89 "Berlin Capital Signals 2026 [Synthetic]", import_status Imported, 12 coverage entries with luma_attendee_id luma-0001 … luma-0012, 11 Verified and 1 Conflict (Anna Müller, entry f878fdb4-4894-4851-a460-add5139d8a8c). Three older fixture entries on the same event carry suppressed = true; ignore them.
-- Slack team T0C9LBW0N3G: #event-coverage C0C9WQFS78A (team summary); public DRI channels #targets-mara, #targets-leonie (C0CAUDMH80Y), #targets-tara (resolve the other two IDs by name). The private #coverage-* channels are retired: the Dataleap Slack connection cannot operate in private channels. Bot user U0C9X4ZUJF4.
+- Slack team T0C9LBW0N3G: #event-coverage C0C9WQFS78A (team summary); public DRI channels #targets-mara C0C9YDQ3HML, #targets-leonie C0CAUDMH80Y, #targets-tara C0CA43FNPGC. The private #coverage-* channels are retired: the Dataleap Slack connection cannot operate in private channels. Bot user U0C9X4ZUJF4.
 - DRI profiles Testperson 1–3 in list ir_dri_people. Testperson 1 has no slack_user_id and is therefore not eligible until it is set (IR DRI Routing, Eligibility).
 
 PHASE 0 — DISCOVERY (read-only, short)
