@@ -90,3 +90,7 @@ Channel IDs: #targets-mara C0C9YDQ3HML, #targets-leonie C0CAUDMH80Y, #targets-ta
 Testperson 1 (Mara) slack_user_id = U0C9U823G8K written to Attio and read back; all three DRIs eligible. Second new Slack user "Mara Pasenau" U0CA45L5VUL (mara.pasenau@gmail.com) exists but is not mapped to anything.
 
 Attio attributes `slack_channel_id` and `attending_events` created on `ir_dri_people` (2026-10-17) and populated for Testperson 1–3 (channels C0C9YDQ3HML / C0CAUDMH80Y / C0CA43FNPGC, event f0bc9108). Read back verified.
+
+## Update 01:30 — photo, follow-up, identity guard (prompt v. next commit)
+
+LinkedIn tool is Crustdata-backed; fields verified with Mara's profile: `profile_picture_permalink`, `company_website_domain`, `confidence_score`, headline/summary/experience. Added: photo in digests (best effort, Slack only), 6.9 follow-up draft with task and ✅ close, web identity guard, Company match by domain. Tests T18–T20. Voice test (T11) still pending.

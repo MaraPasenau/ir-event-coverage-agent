@@ -80,3 +80,14 @@ B. No product `interested` but a concrete `next_step`:
 C. No interest, no next step: coverage `conversation_outcome` only; stage → Closed. No proposal message; post "Note saved, no CRM changes proposed." in the channel.
 
 End A and B with: "React :+1: to approve or :-1: to reject."
+
+## Follow-up (consumed by step 6.9, after approval)
+The agent drafts; the DRI sends. One draft per approved proposal_id.
+Inputs: conversation note summary, `professional_interests`, approved `next_step`, `timing`, `requested_materials`, DRI display_name, attendee first name.
+Shape, first person of the DRI, 60–110 words, plain sentences:
+1. One line of thanks naming the event and one concrete thing from the conversation (from the note, not invented).
+2. The agreed next step as a proposal with a time frame ("I'll send over the Gen Cap material this week"; "would Tuesday or Wednesday next week work for a 30-minute call?").
+3. If `requested_materials` is non-empty: name what will be sent, nothing else.
+4. Sign-off with the DRI's first name.
+Rules: no amounts, no ticket sizes, no fund performance, no promises not in the debrief; no exclamation marks; subject line for email = "<event short name>: next step" (e.g. "Berlin Capital Signals: next step"). Outcome No Fit → no draft (case C never reaches 6.9). Nurture with a next_step (case B) → a shorter 40–70 word version: thanks, the one thing agreed, sign-off.
+Channel selection and task handling are specified in the agent prompt, 6.9.

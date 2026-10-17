@@ -6,7 +6,7 @@ description: Attio workspace b2v schema, normalization functions, idempotency ke
 # IR Attio Contract (workspace b2v, schema read 2026-10-16)
 
 ## Allowed Attio operations
-search-records, get-records-by-ids, create-record, update-record, add-record-to-list, update-list-entry-by-record-id, update-list-entry-by-id, list-records-in-list, create-note, search-notes-by-metadata, get-note-body, create-task, list-tasks, list-attribute-definitions (read only, to resolve select option IDs and stage sets).
+search-records, get-records-by-ids, create-record, update-record, add-record-to-list, update-list-entry-by-record-id, update-list-entry-by-id, list-records-in-list, create-note, search-notes-by-metadata, get-note-body, create-task, update-task (mark follow-up tasks complete only), list-tasks, list-attribute-definitions (read only, to resolve select option IDs and stage sets).
 Not allowed: merge-records, any delete, writes to objects or lists not listed here.
 
 ## Normalization functions (used by every match and key)
@@ -71,6 +71,7 @@ List ID 8ad90a24-81ed-41da-872b-e50241f13f2a. One shared list; one entry per per
 | promoted_at | timestamp | | 6.8 |
 | promotion_approved_by | actor-ref | | 6.8 |
 
+Profile photos: the agent never writes `profile_photo_url`, `profile_photo_source`, `profile_photo_use` or any image URL to Attio; a picture URL from LinkedIn enrichment is used only inside a Slack briefing and stored only in `evidence_records` (topic photo).
 Read-only for the agent: `confirmed_overall_tier`, `suppressed`, `outreach_permission`, `processing_basis`, `identity_reviewed_by`, `identity_reviewed_at`, `dri_assignment_by`, `profile_photo_url`, `profile_photo_source`, `profile_photo_use`.
 If `suppressed = true`, skip the entry in 6.6 and 6.8. If `dri_assignment_state = Confirmed`, skip the entry in 6.5.
 
@@ -116,7 +117,7 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 `create-note` on the Person record, one per debrief. Title: `Event debrief — <event name> — <YYYY-MM-DD> — <source message ts>`; the ts makes two debriefs on one day distinct. Body: the fields in IR Debrief Extraction, section "Conversation note". Lookup before create: list the Person's notes (paginate until exhausted) and match the title locally; if present, skip.
 
 ## Tasks (standard)
-`create-task` with `content`, `deadline_at`, `linked_records` = the opportunity when one exists, else the Person, `assignees` = DRI `workspace_member` if set, else unassigned. Lookup before create: `list-tasks` on the linked record with identical `content`; if present, skip.
+`create-task` and `update-task` (completion only, for follow-up tasks) with `content`, `deadline_at`, `linked_records` = the opportunity when one exists, else the Person, `assignees` = DRI `workspace_member` if set, else unassigned. Lookup before create: `list-tasks` on the linked record with identical `content`; if present, skip.
 
 ## Approval attribution
 `promotion_approved_by` is an actor reference. Resolve from the approving Slack user: `dri_config.slack_user_id` → that DRI's `workspace_member`. Testperson 1 and Testperson 3 currently map to the same workspace member (3eb34deb-14a7-4096-bd23-4ccc5e29a231); to keep attribution unambiguous, write `promotion_approved_by` only for Testperson 3, and for every approval record the Slack user ID in the note body and in `run_log`. Testperson 2 has no workspace member: leave empty.
@@ -137,7 +138,7 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 ## Agent DB tables
 - `evidence_records(id, coverage_entry_id, claim, topic, source_url, source_tag, source_date, collected_at)`
 - `proposals` (schema in IR Debrief Extraction)
-- `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
+- `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question, followup, test}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
 - `run_log(run_id, step, entry_id, key, target, payload_hash, status ∈ {pending, verified, mismatch, failed, ignored}, detail, latency_ms, created_at)`
 - `dri_config` (mirror of `ir_dri_people`, rebuilt every run)
 - `runs(run_id, trigger, event_record_id, started_at, finished_at, entries_processed, writes_verified, failures)`
