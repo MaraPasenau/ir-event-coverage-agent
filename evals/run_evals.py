@@ -12,6 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from rules.tier import ProductEvidence, Signal, overall, tier  # noqa: E402
 from rules.route import DRI, Entry, route_event  # noqa: E402
+from rules.transcript_normalize import normalize  # noqa: E402
 
 RUN = date(2026, 10, 16)
 FAILS: list[str] = []
@@ -106,6 +107,17 @@ check("capacity 1 → second Gen Cap row not to Tara", r4["l1"].dri_code == "Tes
 # No attendee → Escalated
 r5 = route_event([entries[0]], [DRI("Testperson 3", frozenset({"Gen Cap"}), frozenset({"Consumer"}), slack_user_id="U3", attending=False)])
 check("no attending DRI → Escalated", r5["luma-0001"].state == "Escalated")
+
+# 5. Transcript normalization
+t, ch = normalize("Ähm. Ich habe mit Testperson 4 gesprochen, sehr interessiert. Jinka will nächste Woche einen Intro-Call machen und, ähm, genau, Fun-Themen haben wir derweil nicht besprochen.", ["Testperson 4"])
+check("ASR: Jinka → Gen Cap, Fun-Themen → Fund", ("Jinka", "Gen Cap") in ch and ("Fun-Themen", "Fund") in ch, str(ch))
+check("ASR: function words never corrected (und ≠ Fund, mit kept)", "mit Testperson 4" in t and " und," in t, t)
+t, ch = normalize("Kurzes Gespräch mit Anna Mueller, nur Fonds, keine Direktinvestments.", ["Anna Müller"])
+check("ASR: negation preserved, name diacritics fixed", "keine Direktinvestments" in t and ("Anna Mueller", "Anna Müller") in ch, t)
+t, ch = normalize("Spoke with Testperson 4, very interested in Gen Cap, wants an intro call next week.", ["Testperson 4"])
+check("ASR: clean English transcript unchanged except canonical casing", ch == [] and "intro call next week" in t, t)
+t, ch = normalize("Nice chat with Testperson eleven, maybe later.", ["Testperson 11"])
+check("ASR: partial names left to the LLM resolver", ch == [], t)
 
 print(f"\n{len(FAILS)} failure(s)")
 sys.exit(1 if FAILS else 0)

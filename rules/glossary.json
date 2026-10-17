@@ -1,0 +1,54 @@
+{
+  "products": {
+    "Gen Cap": [
+      "gencap",
+      "gen kap",
+      "jen cap",
+      "jinka",
+      "gen cup",
+      "gen gap",
+      "genkap",
+      "jenkap"
+    ],
+    "DI Angel Investment": [
+      "di",
+      "d.i.",
+      "dee eye",
+      "di angel",
+      "di co-invest",
+      "di co invest",
+      "di koinvest",
+      "direct investment",
+      "direct investments",
+      "direktinvestment",
+      "direktinvestments",
+      "angel investment"
+    ],
+    "Fund": [
+      "fun",
+      "fond",
+      "fonds",
+      "funds",
+      "fund themen",
+      "fun themen",
+      "fonds themen"
+    ]
+  },
+  "terms": {
+    "intro call": [
+      "intro-call",
+      "introcall",
+      "intro kol",
+      "intro-kol"
+    ],
+    "family office": [
+      "familie office",
+      "family offiz",
+      "famili office"
+    ],
+    "deck": [
+      "deg",
+      "dack"
+    ]
+  }
+}
