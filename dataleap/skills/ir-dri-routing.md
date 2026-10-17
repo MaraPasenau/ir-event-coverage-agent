@@ -1,5 +1,6 @@
 ---
 name: IR DRI Routing
+version: 2026-10-17.2
 description: Eligibility, onboarding and deterministic rules R1–R4 for assigning a coverage DRI to an event attendee. Use in the DRI assignment step and for the approver check.
 ---
 

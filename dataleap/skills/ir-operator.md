@@ -1,5 +1,6 @@
 ---
 name: IR Operator
+version: 2026-10-17.1
 description: How to read and answer messages from the operator (Mara) in this chat. Load on every operator message before anything else. Does not apply to Slack messages from DRIs.
 ---
 

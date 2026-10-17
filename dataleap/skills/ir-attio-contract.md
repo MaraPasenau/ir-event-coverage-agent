@@ -1,5 +1,6 @@
 ---
 name: IR Attio Contract
+version: 2026-10-17.3
 description: Attio workspace b2v schema, normalization functions, idempotency keys, agent DB tables and write protocol for the Event Coverage Agent. Use before any Attio read or write.
 ---
 
@@ -141,13 +142,17 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 - `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question, followup, test}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
 - `run_log(run_id, step, entry_id, key, target, payload_hash, status ∈ {pending, verified, mismatch, failed, ignored}, detail, latency_ms, created_at)`
 - `dri_config` (mirror of `ir_dri_people`, rebuilt every run) and one settings row `followup_send_mode` ∈ {draft, send_on_explicit}, default draft
-- `runs(run_id, trigger, event_record_id, started_at, finished_at, entries_processed, writes_verified, failures)`
+- `runs(run_id, trigger, event_record_id, coverage_entry_id, step, status ∈ {in_progress, done, failed, skipped}, started_at, finished_at, entries_processed, writes_verified, failures, cost_usd)` — `step` and `status` are updated before every step (checkpoint); a new run on the same coverage entry first looks for a run with status in_progress and resumes at its `step` instead of starting over.
+- `slack_events(ts, channel_id, kind, processed_at, run_id)` — every incoming Slack event (message or reaction) is inserted here before any work; a duplicate (same ts + channel) ends the run with `skipped: duplicate event`. Exactly-once per event.
+- `locks(coverage_entry_id, run_id, acquired_at)` — acquired before the first write for an entry, TTL 10 minutes; if held by another live run → `skipped: locked`, the event stays in slack_events unprocessed and is retried by the next event or the `retry dead letters` command. Released at run end.
+- `settings(key, value)` — `followup_send_mode` (draft), `budget_daily_usd` (25), `photo_in_digest` (true).
+Budget guard: before any write, sum `runs.cost_usd` for today (Europe/Berlin); if ≥ `budget_daily_usd`, make no writes, post one line in the DRI channel ("Paused for today, Mara knows."), one line to the operator, and end the run with `skipped: budget`.
 
 ## Write protocol
 1. Before a create or update: `run_log` row `{key, target, payload_hash}` status `pending`.
 2. Execute.
 3. Read-back. Steps 6.1–6.7: once per coverage entry at the end of the step, all fields written in that step (`get-records-by-ids` / list entry read). Step 6.8 and every write to `ir_investor_entities`, `ir_opportunities`, notes and tasks: read-back immediately after each write.
 4. Set `verified` or `mismatch`. A mismatch on a timestamp caused by Attio's millisecond truncation, or a blank text read back as `[]`, is reconciled as `verified` with `detail`; no replay.
-5. After a timeout or ambiguous response: look up by idempotency key first; create only if absent. Retries: max 2 (2 s, then 8 s); never retry a create after an ambiguous response.
+5. After a timeout or ambiguous response: look up by idempotency key first; create only if absent. Retries: max 2 with backoff 2 s then 8 s plus random jitter 0–1 s; on HTTP 429 honour Retry-After; never retry a create after an ambiguous response.
 6. A failed item that still fails after retries goes to `run_log` with status `failed` and is listed in the run summary under "Dead letters"; the user command `retry dead letters` re-runs them through the same protocol.
 Reads are not logged individually. One `runs` row per run.

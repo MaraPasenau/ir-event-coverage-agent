@@ -1,5 +1,6 @@
 ---
 name: IR Product Rules demo-v2
+version: demo-v2
 description: Signals, tier function and product ranking for Gen Cap, Fund and DI Angel Investment. Tiers express coverage priority and investment potential, not eligibility. Use in the fit-and-tier step. Also defines rank_products(), used by routing, selected_product and multi-product promotion.
 ---
 

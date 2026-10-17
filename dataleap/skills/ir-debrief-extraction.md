@@ -1,5 +1,6 @@
 ---
 name: IR Debrief Extraction
+version: 2026-10-17.6
 description: How to turn a DRI's post-conversation message (text or confirmed transcript) into a conversation note, a structured proposal draft and a conversation_outcome. Use in the debrief and proposal steps.
 ---
 
