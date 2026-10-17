@@ -8,11 +8,13 @@ description: Rules for assigning a coverage DRI to an event attendee. Use in the
 ## Eligible DRIs
 Read list `ir_dri_people` at the start of every run and mirror eligible rows into agent DB table `dri_config`. A row is eligible when `profile_status = Confirmed`, `product_focus` has at least one value and `vertical_expertise` has at least one value. Rows at Draft or Inactive are never routed. Only the people in this list can be DRIs; no other Attio member or select code is ever used. Current rows:
 
-| dri_code | display_name | product_focus | vertical_expertise | coverage_capacity | slack_user_id | email |
-|---|---|---|---|---|---|---|
-| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not yet mapped | mara.sofi.pasenau@gmail.com |
-| Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | m.pasenau@icloud.com |
-| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | mara.pasenau@b2venture.vc |
+| dri_code | display_name | product_focus | vertical_expertise | capacity | slack_user_id | slack_channel | email |
+|---|---|---|---|---|---|---|---|
+| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not yet mapped | #coverage-mara C0C9J6YJ2MD | mara.sofi.pasenau@gmail.com |
+| Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | #coverage-leonie C0C9TB8LKR9 | m.pasenau@icloud.com |
+| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | #coverage-tara C0CA1F1TV17 | mara.pasenau@b2venture.vc |
+
+Each DRI has a private channel with only the DRI and the Dataleap bot. Briefings and debriefs happen there. #event-coverage (C0C9WQFS78A) is the team overview: event summary only, no individual briefings.
 
 ## Onboarding a new DRI
 1. The user says `add dri <Name>, <email>, <products>, <verticals>` or a Person is added to `ir_dri_people` manually.
