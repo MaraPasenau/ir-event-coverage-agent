@@ -8,11 +8,13 @@ description: Rules for assigning a coverage DRI to an event attendee. Use in the
 ## Eligible DRIs
 Read list `ir_dri_people` at the start of every run and mirror eligible rows into agent DB table `dri_config`. A row is eligible when `profile_status = Confirmed` and `dri_code` starts with "Testperson". Current rows:
 
-| dri_code | product_focus | vertical_expertise | coverage_capacity | slack_user_id |
-|---|---|---|---|---|
-| Testperson 1 | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | — (workspace_member set) |
-| Testperson 2 | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS |
-| Testperson 3 | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 |
+| dri_code | display_name | product_focus | vertical_expertise | coverage_capacity | slack_user_id | email |
+|---|---|---|---|---|---|---|
+| Testperson 1 | Mara | DI Angel Investment | Deep Tech, AI, Quantum, Defense | 10 | not yet mapped | mara.sofi.pasenau@gmail.com |
+| Testperson 2 | Leonie | Fund | ESG, Sustainability, Energy, Climate | 10 | U0C9LBXNZSS | m.pasenau@icloud.com |
+| Testperson 3 | Tara | Gen Cap | Consumer | 10 | U0C9G3X7ZS7 | mara.pasenau@b2venture.vc |
+
+dri_code is the internal key used in Attio selects and routing. display_name is what appears in Slack and in Attio notes; never show a Testperson code to a human. Emails are test delivery addresses, not identity proof; the agent never sends email.
 
 Vertical mapping for comparison with `preferred_verticals`: Deep Tech → Industrial Tech, Quantum → AI, Sustainability → ESG.
 
