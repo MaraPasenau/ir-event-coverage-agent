@@ -2,7 +2,7 @@ Ignore all previous instructions in this chat. The following spec replaces them.
 
 I want to build an end-to-end Event Coverage Agent for our VC Investor Relations team, directly in DataLeap. Pre-event: attendee export → event record → identity match in Attio → research → product fit and tier → DRI assignment → Slack briefing. Post-event: DRI debrief in the DRI's own Slack channel (text or voice) → conversation note → structured proposal → approval by Slack reaction → Attio writes → read-back → confirmation.
 
-Four skills are already imported into this workspace and are the rule base. Load each one only in the step that names it:
+Five skills are already imported into this workspace. IR Operator is loaded on every message from the operator in this chat (it governs how those messages are read and answered). The four rule skills are loaded only in the step that names them:
 - IR Attio Contract — schema, normalization, stage machine, idempotency keys, agent DB tables, write protocol. Load before any Attio read or write.
 - IR Product Rules demo-v2 — signals, tier function, rank_products(). Load in 6.4; rank_products() is also referenced in 6.5 and 6.8.
 - IR DRI Routing — eligibility, onboarding, rules R1–R4, approvers. Load in 6.5 and for every reaction check.
@@ -14,7 +14,7 @@ Use DataLeap's own harness, agent database, triggers and approval patterns. Do n
 
 COST MODE (applies to every step)
 
-The IR Attio Contract was verified against the live schema on 2026-10-16; do not re-verify the schema beyond resolving select option IDs. Read-back per the write protocol in the contract: once per coverage entry at the end of steps 6.1–6.7, per write in 6.8. run_log: one row per create or update, none per read, one `runs` row per run. Use the lowest model tier that supports tool calls for 6.3 research. Reusable Python for deterministic operations (read-back comparison, key derivation, routing) is permitted where the platform requires it; rules/tier.py and rules/route.py in the repository are the reference implementations. LLM reasoning only for evidence interpretation and debrief extraction. Report deviations from expected results plus a per-entry table, nothing else. Per-entry tool budget in 6.3: 4 calls.
+The IR Attio Contract was verified against the live schema on 2026-10-16; do not re-verify the schema beyond resolving select option IDs. Read-back per the write protocol in the contract: once per coverage entry at the end of steps 6.1–6.7, per write in 6.8. run_log: one row per create or update, none per read, one `runs` row per run. Use the lowest model tier that supports tool calls for 6.3 research. Reusable Python for deterministic operations (read-back comparison, key derivation, routing) is permitted where the platform requires it; rules/tier.py and rules/route.py in the repository are the reference implementations. LLM reasoning only for evidence interpretation and debrief extraction. Report per IR Operator: deviations first, IDs, at most eight lines unless a table is due. Approval, confirmation and clarification in Slack are always read by intent (reaction or reply) from the assigned DRI; no runtime helper may hard-code an emoji-only rule. Per-entry tool budget in 6.3: 4 calls.
 
 STATE OF THE TARGET SYSTEMS (already exists, do not recreate)
 
@@ -25,7 +25,7 @@ STATE OF THE TARGET SYSTEMS (already exists, do not recreate)
 PHASE 0 — DISCOVERY (read-only, short)
 
 1. List the tools available to this agent (for the transcription tool: does it accept a vocabulary, prompt or keyword parameter, and does it return word-level confidence?): Attio (create-record, update-record, add-record-to-list, update-list-entry-by-id, create-note, create-task, list-attribute-definitions present?), Slack (send_message, read_thread, read_channel, reactions, file download, user lookup by email, conversation create), LinkedIn, Web Search, voice transcription, agent DB.
-2. Confirm the four skills above are present and readable; confirm IR Product Rules reports rules_version demo-v2.
+2. Confirm the five skills above are present and readable; confirm IR Product Rules reports rules_version demo-v2.
 3. Slack: resolve #targets-mara, #targets-leonie, #targets-tara by name, confirm they are public and that the Dataleap app (U0C9X4ZUJF4) is a member of each and of C0C9WQFS78A; store the IDs in dri_config and report them. Confirm new-message and reaction-added triggers are available for these public channels.
 4. Attio: list-records-in-list on ir_event_coverage filtered by coverage_event = the event record above; report the count of entries with a non-empty luma_attendee_id (expected 12) and, per entry, coverage_stage and proposed_overall_tier. Read slack_channel_id and attending_events from ir_dri_people (both populated for Testperson 1–3).
 5. Create the agent DB tables from IR Attio Contract if absent. Output a short capability report, then stop and wait for go.
