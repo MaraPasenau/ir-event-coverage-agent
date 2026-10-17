@@ -26,7 +26,7 @@ dri_code is the internal key used in Attio selects and routing. display_name is 
 Vertical mapping for comparison with `preferred_verticals`: Deep Tech → Industrial Tech, Quantum → AI, Sustainability → ESG.
 
 ## Attendance
-`dri_config` carries `attending_event` per event, set by the user command `attending <event>: Testperson 1, Testperson 3`. Default when not set: all eligible DRIs attend. A DRI not attending the event is skipped by R1–R3 for that event.
+`dri_config` carries `attending_event` per event, set by the user command `attending <event>: Mara, Tara`. Default when not set: all eligible DRIs attend. Everyone at an event who reaches Tier A/B/C gets a DRI; R4 guarantees that as long as one DRI attends. A DRI not attending the event is skipped by R1–R3 for that event.
 
 ## Tie-break for "product with the highest tier"
 If two products share the highest tier, take the one with more `supported` criteria; if still tied, apply the precedence Gen Cap > DI Angel Investment > Fund (configurable here).
@@ -35,7 +35,7 @@ If two products share the highest tier, take the one with more `supported` crite
 - R1 relationship: an eligible DRI whose `relationship_people` contains the person → that DRI
 - R2 product: the eligible DRI whose `product_focus` contains the product with the highest tier
 - R3 vertical: an eligible DRI with ≥ 1 overlap between mapped `vertical_expertise` and `preferred_verticals`; on a tie set `Escalated` with both in `candidate_dris`
-- R4 none: `dri_assignment_state = Escalated`, `candidate_dris` = all eligible DRIs, `assigned_dri` empty
+- R4 attendance: no product or vertical match → the eligible DRI who is attending the event and has the fewest assignments for this event so far; on a tie, the one listed first. `dri_assignment_reason = R4 attendance`. Only if no eligible DRI is attending: `dri_assignment_state = Escalated`, `candidate_dris` = all eligible DRIs, `assigned_dri` empty, reason `R4 no attendee`.
 
 Capacity check before any assignment: count the DRI's entries for this event at stages `DRI Assigned` and `Pre-event Brief Ready`. If the count equals `coverage_capacity`, fall through to the next rule.
 

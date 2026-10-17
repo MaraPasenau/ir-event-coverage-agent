@@ -103,7 +103,7 @@ SECTION 4 — GLOBAL CONSTRAINTS
 2. A step is complete only when all its writes passed read-back. Otherwise report the failed items. Never report success on the model's word alone.
 3. run_log per tool call: step, entry_id, tool, args_hash, result_status, records_written, latency_ms, cost if exposed. One summary row per run: run_id, trigger, event_record_id, entries processed, writes verified, failures.
 4. Attio holds business records and human decisions; the agent DB holds execution state, evidence and proposals. Never overwrite human-set fields.
-5. Eligible DRIs come from IR DRI Routing only. Anything else routes to R4.
+5. Eligible DRIs come from IR DRI Routing only. Every routed attendee gets a DRI: product match, then vertical match, then any attending DRI (R4). Escalation only when no DRI attends.
 
 SECTION 5 — ACCEPTANCE TESTS
 
