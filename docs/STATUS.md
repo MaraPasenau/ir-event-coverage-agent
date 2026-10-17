@@ -96,3 +96,13 @@ Attio attributes `slack_channel_id` and `attending_events` created on `ir_dri_pe
 LinkedIn tool is Crustdata-backed; fields verified with Mara's profile: `profile_picture_permalink`, `company_website_domain`, `confidence_score`, headline/summary/experience. Added: photo in digests (best effort, Slack only), 6.9 follow-up draft with task and ✅ close, web identity guard, Company match by domain. Tests T18–T20. Voice test (T11) still pending.
 
 Transcription tool: no vocabulary/prompt parameter (checked 2026-10-17); normalizer is the first correction layer. Attio notes list: limit 50 max. First live voice debrief: note verified, Gen Cap proposal posted 1792228407.318429 in #targets-tara, stage Routing Ready, awaiting 👍.
+
+## Update 03:20 — runtime reliability live (status_e86f69d)
+
+`status` after a55cceb/e86f69d: blocked=false, guard_mode=run_count (19/60 today; Dataleap exposes no per-run USD cost, so cost_usd stays NULL), 0 open dead letters, 0 pending events, all five skill versions declared (Contract 2026-10-17.3, Routing .2, Debrief .6, Operator .1, Product Rules demo-v2) with content hashes. Settings: followup_send_mode=draft, budget_daily_runs=60, photo_in_digest=true.
+
+First live post-event run (Tara, Testperson 4): voice → transcript (German, "Jinka" for Gen Cap) → confirmation → note → proposal → approval by reply → investor entity c8673e16, Gen Cap opportunity 7f22de6d (responsible_dri Testperson 3, responsible_workspace_member set), NDA task, coverage Promoted, follow-up draft with mailto + follow-up task. 9 + 12 writes verified.
+
+Platform facts learned: Dataleap transcription works only as a native tool, not via programmatic tool calling (HTTP 400 file-output tools unavailable); skill import strips front matter beyond name/description (hence the "Version …" body line); skill IDs change on re-import (agent must load skills by name); the agent's durable instructions grow on every reload (21.8k chars) and need compaction after the Loom.
+
+Open before the Loom: T3 rejection as Mara (Testperson 11), ✅ on the follow-up draft as Tara, config/workspace.yaml + docs/SETUP.md, Slack cleanup (archive #coverage-*, rename main account to Tara).
