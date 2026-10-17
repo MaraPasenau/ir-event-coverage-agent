@@ -81,7 +81,7 @@ Rules:
 - Marker: 🟢 if the best tier is A, 🟡 if B, 🔵 if C. One marker per attendee, at the start of the name line. Unrated entries have no marker and appear only in the final block.
 - Tiers line: only products at A/B/C, as "<product> <letter>", comma-separated, best first, e.g. "Fund A, Gen Cap B". Products at Needs Review or Irrelevant are not mentioned.
 - Background: one sentence, third person, facts from evidence only. No citations, no dates in brackets, no "synthetic" wording. Entries with identity_review_state = Pending add "identity unverified" at the end of the background sentence.
-- Worth asking: one sentence, the highest-value open question, optionally a second one joined with "and".
+- Worth asking: one sentence, the highest-value open question as an indirect question in third person ("whether the family office has backed venture funds before and how large a typical ticket is"), never a quoted direct question to the attendee; optionally a second one joined with "and".
 - Address the DRI by display_name from dri_config; mention by <@slack_user_id> in the first line. Never show a dri_code in Slack.
 - No section headers like Fit/Why/Ask, no middle dots, no dashes as separators, no second person for the attendee. Plain sentences and line breaks only.
 - Demo runs add "[demo]" after the event name.
