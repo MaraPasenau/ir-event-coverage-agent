@@ -122,6 +122,10 @@ t, ch = normalize("Talked to test person 11, nice. I will send the generational 
 check("ASR: 'test person' → Testperson, 'generational capital' → Gen Cap", "Testperson 11" in t and "Gen Cap deck" in t, t)
 t, ch = normalize("She runs the general partner programme and the capital calls.", ["Testperson 4"])
 check("ASR: 'general partner … capital' is not Gen Cap", ch == [], t)
+t, ch = normalize("We're going to take her out of the Gen Cap pipeline and put her on the fund pipeline.", ["Testperson 11"])
+check("ASR: 'take' is never turned into 'deck' (no phonetic match on short words)", "take her out" in t and ("take", "deck") not in ch, t)
+t, ch = normalize("I spoke with Sess Person 11 about the generational capital investment.", ["Testperson 11"])
+check("ASR: 'Sess Person 11' → Testperson 11, 'generational capital' → Gen Cap", "Testperson 11" in t and "Gen Cap" in t, t)
 
 print(f"\n{len(FAILS)} failure(s)")
 sys.exit(1 if FAILS else 0)

@@ -23,6 +23,7 @@ GLOSSARY = json.loads((Path(__file__).parent / "glossary.json").read_text())
 FUZZ_MIN = 80          # rapidfuzz ratio 0–100
 MAX_NGRAM = 3
 MIN_FUZZY_LEN = 4      # tokens shorter than this are only matched exactly
+METAPHONE_MIN_LEN = 5  # phonetic matching needs at least this many letters
 STOP = set("""und oder aber mit ohne für von vor nach bei zu zum zur in im am an auf aus das der die den dem des ein eine einen
 einem einer ist sind war hat haben wir ihr sie er es ich du man nicht noch auch mal dann wenn weil dass was wie wo
 the and or but with without for of from to at in on by a an is are was has have we you they he she it not also then if because
@@ -65,7 +66,9 @@ def _match(span: str, cands: dict[str, str]) -> str | None:
         if len(alias.split()) != len(words):
             continue
         score = fuzz.ratio(key, alias)
-        if span_m and span_m == jellyfish.metaphone(alias):
+        # phonetic shortcut only for longer spans and only when the spelling is not far off:
+        # "take" and "deck" share a metaphone but are different words
+        if span_m and len(key.replace(" ", "")) >= METAPHONE_MIN_LEN and score >= 60 and span_m == jellyfish.metaphone(alias):
             score = max(score, 88)
         if score > best_score:
             best, best_score = canon, score
