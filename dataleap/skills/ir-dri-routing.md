@@ -1,12 +1,12 @@
 ---
 name: IR DRI Routing
-version: 2026-10-17.2
+version: 2026-10-17.3
 description: Eligibility, onboarding and deterministic rules R1–R4 for assigning a coverage DRI to an event attendee. Use in the DRI assignment step and for the approver check.
 ---
 
 # IR DRI Routing
 
-Version 2026-10-17.2. The agent reports this line as the skill version.
+Version 2026-10-17.3. The agent reports this line as the skill version.
 
 ## Source of truth
 Attio list `ir_dri_people` is authoritative. Read it at the start of every run and mirror eligible rows into agent DB table `dri_config` (`dri_code`, `display_name`, `person_record_id`, `product_focus`, `vertical_expertise`, `coverage_capacity`, `slack_user_id`, `slack_channel_id`, `workspace_member`, `relationship_people`, `attending_events`). The table below is a snapshot for the reader; never route from it.
@@ -62,4 +62,4 @@ On assignment write `assigned_dri` (Person record of the DRI), `dri_assignment_s
 - Never touch an entry whose `dri_assignment_state = Confirmed`. Humans set Confirmed in Attio when they override `assigned_dri`; that is the only override signal, no agent DB comparison.
 
 ## Approvers
-A reaction counts as approval or rejection only when the reacting Slack user ID equals the `slack_user_id` of the entry's `assigned_dri`. Any other reaction is logged to `run_log` and ignored. In a two-member private channel this is equivalent to "any eligible DRI in the channel"; the rule is still stated per entry.
+A reaction or reply counts as approval, rejection or change request only when the Slack user ID equals the `slack_user_id` of the proposal's `debriefing_dri` (the DRI who posted the debrief; for a single-DRI entry this is the `assigned_dri`). Any other reaction or reply is logged to `run_log` and ignored. Approval is bound to the person who made the claims, not to the channel. Changes to `assigned_dri` itself and to `dri_assignment_state` are never approved in Slack; they are set in Attio by a human.

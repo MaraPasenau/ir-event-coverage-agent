@@ -1,12 +1,12 @@
 ---
 name: IR Attio Contract
-version: 2026-10-17.3
+version: 2026-10-17.4
 description: Attio workspace b2v schema, normalization functions, idempotency keys, agent DB tables and write protocol for the Event Coverage Agent. Use before any Attio read or write.
 ---
 
 # IR Attio Contract (workspace b2v, schema read 2026-10-16)
 
-Version 2026-10-17.3. The agent reports this line as the skill version.
+Version 2026-10-17.4. The agent reports this line as the skill version.
 
 ## Allowed Attio operations
 search-records, get-records-by-ids, create-record, update-record, add-record-to-list, update-list-entry-by-record-id, update-list-entry-by-id, list-records-in-list, create-note, search-notes-by-metadata, get-note-body, create-task, update-task (mark follow-up tasks complete only), list-tasks, list-attribute-definitions (read only, to resolve select option IDs and stage sets).
@@ -123,7 +123,7 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 `create-task` and `update-task` (completion only, for follow-up tasks) with `content`, `deadline_at`, `linked_records` = the opportunity when one exists, else the Person, `assignees` = DRI `workspace_member` if set, else unassigned. Lookup before create: `list-tasks` on the linked record with identical `content`; if present, skip.
 
 ## Approval attribution
-`promotion_approved_by` is an actor reference. Resolve from the approving Slack user: `dri_config.slack_user_id` → that DRI's `workspace_member`. Testperson 1 and Testperson 3 currently map to the same workspace member (3eb34deb-14a7-4096-bd23-4ccc5e29a231); to keep attribution unambiguous, write `promotion_approved_by` only for Testperson 3, and for every approval record the Slack user ID in the note body and in `run_log`. Testperson 2 has no workspace member: leave empty.
+`promotion_approved_by` is an actor reference. The approving Slack user is the proposal's `debriefing_dri` (IR DRI Routing, Approvers). Resolve from that Slack user: `dri_config.slack_user_id` → that DRI's `workspace_member`. Testperson 1 and Testperson 3 currently map to the same workspace member (3eb34deb-14a7-4096-bd23-4ccc5e29a231); to keep attribution unambiguous, write `promotion_approved_by` only for Testperson 3, and for every approval record the Slack user ID in the note body and in `run_log`. Testperson 2 has no workspace member: leave empty.
 
 ## Multi-product promotion
 `selected_product` and `promoted_opportunity` are single-valued. When one debrief creates more than one opportunity: `selected_product` = `rank_products(interested products)[0]`; `promoted_opportunity` = that product's opportunity; all opportunity record IDs are stored in the `proposals` row and listed in the Slack confirmation.
