@@ -114,7 +114,7 @@ Never write: `fund_stage`, `di_stage`, `gen_cap_stage`, `closing_probability`, `
 Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`, `ir_gen_cap_opportunities`.
 
 ## Notes (standard)
-`create-note` on the Person record, one per debrief. Title: `Event debrief — <event name> — <YYYY-MM-DD> — <source message ts>`; the ts makes two debriefs on one day distinct. Body: the fields in IR Debrief Extraction, section "Conversation note". Lookup before create: list the Person's notes (paginate until exhausted) and match the title locally; if present, skip.
+`create-note` on the Person record, one per debrief. Title: `Event debrief — <event name> — <YYYY-MM-DD> — <source message ts>`; the ts makes two debriefs on one day distinct. Body: the fields in IR Debrief Extraction, section "Conversation note". Lookup before create: list the Person's notes with limit 50 (Attio rejects larger pages), paginate until exhausted, match the title locally; if present, skip.
 
 ## Tasks (standard)
 `create-task` and `update-task` (completion only, for follow-up tasks) with `content`, `deadline_at`, `linked_records` = the opportunity when one exists, else the Person, `assignees` = DRI `workspace_member` if set, else unassigned. Lookup before create: `list-tasks` on the linked record with identical `content`; if present, skip.

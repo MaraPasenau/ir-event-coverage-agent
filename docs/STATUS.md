@@ -94,3 +94,5 @@ Attio attributes `slack_channel_id` and `attending_events` created on `ir_dri_pe
 ## Update 01:30 — photo, follow-up, identity guard (prompt v. next commit)
 
 LinkedIn tool is Crustdata-backed; fields verified with Mara's profile: `profile_picture_permalink`, `company_website_domain`, `confidence_score`, headline/summary/experience. Added: photo in digests (best effort, Slack only), 6.9 follow-up draft with task and ✅ close, web identity guard, Company match by domain. Tests T18–T20. Voice test (T11) still pending.
+
+Transcription tool: no vocabulary/prompt parameter (checked 2026-10-17); normalizer is the first correction layer. Attio notes list: limit 50 max. First live voice debrief: note verified, Gen Cap proposal posted 1792228407.318429 in #targets-tara, stage Routing Ready, awaiting 👍.
