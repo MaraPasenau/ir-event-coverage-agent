@@ -67,8 +67,8 @@ Callers may restrict the input set (the debrief step ranks only the products wit
 - `proposed_overall_tier` = tier of `rank_products(all three)[0]`.
 - `relevant_products` = products at Tier A, B or C.
 - `product_fit_reasons` = line 1 `rules_version: demo-v2`, then one line per product: `Gen Cap: G1=supported (website 2026-01, external), G2=supported (linkedin 2026-03), G3=unknown, GX=unknown → Tier A`.
-- `data_gaps` = the `unknown` core signals, phrased as questions the DRI can ask.
-- `conversation_talking_points` = 2–3 openers tied to supported signals, plus the one question that resolves the highest-value `unknown`.
+- `data_gaps` = the `unknown` core signals as short missing-information items. Internal field; never shown in briefings.
+- `conversation_talking_points` = 2–3 facts from supported signals a DRI can refer to. Internal field; never shown in briefings.
 
 ## Separate concepts, never merged
 1. Investment potential (this skill, pre-event).

@@ -44,7 +44,7 @@ List ID 8ad90a24-81ed-41da-872b-e50241f13f2a. One shared list; one entry per per
 | enrichment_status | status | Pending, Complete, Partial, Failed | 6.3 |
 | enriched_at | timestamp | | 6.3 |
 | professional_summary | text | max 3 sentences | 6.3 |
-| professional_interests | text | | 6.3 |
+| professional_interests | text | investment focus per 6.3 definition; shown in the briefing as Interests | 6.3 |
 | investment_history_summary | text | | 6.3 |
 | preferred_verticals | multi-select | AI, Biotech, Climate, Consumer, Defense, Energy, Enterprise Software, ESG, FinTech, Health, Industrial Tech, Space, Other, Unknown | 6.3 |
 | evidence_urls | text | one URL per line | 6.3 |
