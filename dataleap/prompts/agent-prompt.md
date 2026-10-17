@@ -16,6 +16,10 @@ COST MODE (applies to every step)
 
 The IR Attio Contract was verified against the live schema on 2026-10-16; do not re-verify the schema beyond resolving select option IDs. Read-back per the write protocol in the contract: once per coverage entry at the end of steps 6.1–6.7, per write in 6.8. run_log: one row per create or update, none per read, one `runs` row per run. Use the lowest model tier that supports tool calls for 6.3 research. Reusable Python for deterministic operations (read-back comparison, key derivation, routing) is permitted where the platform requires it; rules/tier.py and rules/route.py in the repository are the reference implementations. LLM reasoning only for evidence interpretation and debrief extraction. Report per IR Operator: deviations first, IDs, at most eight lines unless a table is due. Approval, confirmation and clarification in Slack are always read by intent (reaction or reply) from the assigned DRI; no runtime helper may hard-code an emoji-only rule. Per-entry tool budget in 6.3: 4 calls.
 
+INSTANCE CONFIGURATION
+
+All instance values (Attio IDs, Slack IDs, DRIs, products, settings) are in config/workspace.yaml in the repository. Read it in Phase 0, mirror `settings` into the agent DB, and use its values wherever this prompt or a skill shows a concrete ID; the IDs written below are the current values of that file for this workspace.
+
 STATE OF THE TARGET SYSTEMS (already exists, do not recreate)
 
 - Attio event record f0bc9108-2f96-416e-9e42-d09aafb4ae89 "Berlin Capital Signals 2026 [Synthetic]", import_status Imported, 12 coverage entries with luma_attendee_id luma-0001 … luma-0012, 11 Verified and 1 Conflict (Anna Müller, entry f878fdb4-4894-4851-a460-add5139d8a8c). Three older fixture entries on the same event carry suppressed = true; ignore them.
@@ -28,7 +32,7 @@ PHASE 0 — DISCOVERY (read-only, short)
 2. Confirm the five skills above are present and readable; report each skill's version from the "Version …" line under its heading (front matter may be stripped on import); confirm IR Product Rules reports rules_version demo-v2.
 3. Slack: resolve #targets-mara, #targets-leonie, #targets-tara by name, confirm they are public and that the Dataleap app (U0C9X4ZUJF4) is a member of each and of C0C9WQFS78A; store the IDs in dri_config and report them. Confirm new-message and reaction-added triggers are available for these public channels.
 4. Attio: list-records-in-list on ir_event_coverage filtered by coverage_event = the event record above; report the count of entries with a non-empty luma_attendee_id (expected 12) and, per entry, coverage_stage and proposed_overall_tier. Read slack_channel_id and attending_events from ir_dri_people (both populated for Testperson 1–3).
-5. Create the agent DB tables from IR Attio Contract if absent. Output a short capability report, then stop and wait for go.
+5. Read config/workspace.yaml; report any value that disagrees with the live systems (channel IDs, DRI Slack IDs, event record). Create the agent DB tables from IR Attio Contract if absent and mirror config `settings`. Output a short capability report, then stop and wait for go.
 
 Build vertically after go: 6.4–6.6 for the entries at Ready for Review, then debrief and approval for one of them, then the rest and tests. Make every step observable: real tool calls, record IDs, explicit errors. Do not mock an integration or skip a step silently.
 

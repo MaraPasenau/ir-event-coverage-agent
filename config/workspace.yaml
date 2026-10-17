@@ -1,0 +1,80 @@
+# Instance configuration for the Event Coverage Agent.
+# Everything a second workspace would change lives here; prompt and skills hold logic only.
+# The agent reads this file in Phase 0 (prompt → config/workspace.yaml) and mirrors it into the agent DB `settings` table.
+
+workspace:
+  name: b2v (demo)
+  timezone: Europe/Berlin
+  demo_mode: true                 # adds "[demo]" to briefing titles, allows synthetic attendees
+
+attio:
+  workspace_slug: b-2-v
+  coverage_list_slug: ir_event_coverage
+  coverage_list_id: 8ad90a24-81ed-41da-872b-e50241f13f2a
+  dri_list_slug: ir_dri_people
+  objects:
+    events: ir_coverage_events
+    investor_entities: ir_investor_entities
+    opportunities: ir_opportunities
+  notes_page_size: 50             # Attio rejects larger pages
+  current_event_record_id: f0bc9108-2f96-416e-9e42-d09aafb4ae89
+
+slack:
+  team_id: T0C9LBW0N3G
+  bot_user_id: U0C9X4ZUJF4
+  summary_channel_id: C0C9WQFS78A          # #event-coverage, team summary only
+  dri_channel_prefix: targets-             # one public channel per DRI: #targets-<firstname>
+  retired_channel_ids: [C0C9J6YJ2MD, C0C9TB8LKR9, C0CA1F1TV17]   # private #coverage-*, never used
+
+# DRIs are authoritative in Attio (ir_dri_people). This block is the human-readable mirror and the
+# source for first-time setup; the agent never routes from it.
+dris:
+  - dri_code: Testperson 1
+    display_name: Mara
+    product_focus: [DI Angel Investment]
+    vertical_expertise: [Deep Tech, AI, Quantum, Defense]
+    slack_user_id: U0C9U823G8K
+    slack_channel_id: C0C9YDQ3HML
+  - dri_code: Testperson 2
+    display_name: Leonie
+    product_focus: [Fund]
+    vertical_expertise: [ESG, Sustainability, Energy, Climate]
+    slack_user_id: U0C9LBXNZSS
+    slack_channel_id: C0CAUDMH80Y
+  - dri_code: Testperson 3
+    display_name: Tara
+    product_focus: [Gen Cap]
+    vertical_expertise: [Consumer]
+    slack_user_id: U0C9G3X7ZS7
+    slack_channel_id: C0CA43FNPGC
+
+products:                          # order = precedence in rank_products()
+  - Gen Cap
+  - DI Angel Investment
+  - Fund
+rules_version: demo-v2
+vertical_map:                      # DRI vertical vocabulary → attendee vertical vocabulary
+  Deep Tech: Industrial Tech
+  Quantum: AI
+  Sustainability: ESG
+
+settings:                          # mirrored into agent DB `settings`
+  followup_send_mode: draft        # draft | send_on_explicit
+  budget_daily_usd: 25
+  budget_daily_runs: 60            # used when the platform exposes no per-run cost
+  photo_in_digest: true
+  briefing_trigger_time: "08:00"   # daily, workspace timezone; events starting within 36 h
+  lock_ttl_minutes: 10
+  reminder_after_hours: 48
+
+skills:                            # names as imported in Dataleap; versions are in each file's "Version …" line
+  - IR Operator
+  - IR Attio Contract
+  - IR Product Rules demo-v2
+  - IR DRI Routing
+  - IR Debrief Extraction
+
+repository:
+  url: https://github.com/MaraPasenau/ir-event-coverage-agent
+  prompt_path: dataleap/prompts/agent-prompt.md
+  rules_path: rules/
