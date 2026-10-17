@@ -6,7 +6,11 @@ description: How to turn a DRI's post-conversation note (text or confirmed trans
 # IR Debrief Extraction
 
 ## Input
-`post_event_note`: the raw text reply in the briefing thread, or the transcript confirmed by the DRI. Never extract from an unconfirmed transcript.
+`post_event_note`: the raw text reply in the DRI's briefing thread, or the transcript confirmed by the DRI. Never extract from an unconfirmed transcript.
+One thread covers all of a DRI's attendees for the event. Resolve the attendee from the start of the reply (first name or full name). No match or several matches: ask once in the thread, wait, do not guess.
+
+## Tone for anything posted to Slack or written to Attio notes
+Write like a colleague, not a form. Short sentences, third person for the attendee, no section labels, no middle dots or dashes as separators, no citations in Slack. Proposals in Slack are a short numbered list of plain sentences, e.g. "1. Create investor entity Müller Family Office (family office). 2. Create a Gen Cap opportunity, owner Tara. 3. Task: send Gen Cap intro, due 24 Oct."
 
 ## Output schema (agent DB table `proposals`, status `draft`)
 ```

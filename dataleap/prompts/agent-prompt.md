@@ -57,30 +57,34 @@ SECTION 3 — STEPS
 
 6.5 DRI assignment. Precondition Ready for Review with fit written. Load IR DRI Routing. Write assigned_dri or candidate_dris, dri_assignment_state, dri_assignment_reason. Advance routed entries to DRI Assigned. Post one Slack summary per event run to #event-coverage: table with name, company, overall tier, DRI, open question; plus a "Needs human review" section for Needs Review and Conflict entries.
 
-6.6 Briefing. Trigger: user command "send briefings <event>", or a scheduled trigger at event_start minus 24 h in event_timezone. For each entry at DRI Assigned with assigned_dri set, suppressed not true, briefing_delivery_state not Sent: send_message to #event-coverage, one message per attendee, Slack mrkdwn, exactly this layout and nothing else:
+6.6 Briefing. Trigger: user command "send briefings <event>", or a scheduled trigger at event_start minus 24 h in event_timezone. One message per DRI per event, never one per attendee. Group all entries at DRI Assigned with that assigned_dri, suppressed not true, briefing_delivery_state not Sent. Post one message per DRI to #event-coverage in Slack mrkdwn, written the way a colleague would write it, in this layout:
 
-*<name>* · <company> · <role>
-Event: <event name> · DRI: <@slack_user_id or dri_code>
+*<DRI first name>, your targets for <event name>, <event date>*
+<n> people. Reply in this thread after each conversation, start with the name.
 
-*Fit*
-<fit line>
+<marker> *<name>*, <company>, <role>
+<tiers line>
+<background sentence>
+Worth asking: <one or two questions in one sentence>
+Attio: <<coverage entry URL>|open>
 
-*Why*
-• <bullet 1>
-• <bullet 2>
+(blank line, then the next attendee, ordered by tier A first)
 
-*Ask*
-• <opener>
-• <the single highest-value open question>
+Rules:
+- Marker: 🟢 if the best tier is A, 🟡 if B, 🔵 if C. One marker per attendee, at the start of the name line.
+- Tiers line: only products at A/B/C, as "<product> <letter>", comma-separated, best first, e.g. "Fund A, Gen Cap B". Products at Needs Review or Irrelevant are not mentioned.
+- Background: one sentence, third person, facts from evidence only. No citations, no dates in brackets, no "synthetic" wording.
+- Worth asking: one sentence, the highest-value open question, optionally a second one joined with "and".
+- Address the DRI by first name from dri_config; mention by <@slack_user_id> in the first line when set.
+- No section headers like Fit/Why/Ask, no middle dots, no dashes as separators, no second person for the attendee. Plain sentences and line breaks only.
+- Demo runs add "[demo]" after the event name.
+- Entries at Needs Review or Conflict are not in any DRI message; they appear once in the 6.5 summary.
 
-<<coverage entry URL>|Open in Attio> · Reply in this thread after the conversation.
+Store the message channel and ts on every coverage entry included in that message (slack_channel_id, slack_thread_ts are the same for all of them), set briefing_delivery_state = Sent after the API returns the ts, advance each to Pre-event Brief Ready. Re-running must not resend a message whose entries are all Sent; if some entries in a DRI's group are new, post a short follow-up in the existing thread with only the new attendees.
 
-Fit line rules: list the three products in the order Gen Cap · DI · Fund, separated by " · ". A product at Tier A/B/C is shown as "<marker> <product> <letter>" with marker 🟢 for A, 🟡 for B, 🔵 for C. A product at Irrelevant or Needs Review is shown as "⚪ <product>" with no letter and no explanation. Example: "🟢 Gen Cap A · 🟡 DI B · ⚪ Fund".
-Content rules: at most two Why bullets and two Ask bullets, each one line, no citations, no source tags, no dates, no synthetic/disclaimer wording, no hyphenated clauses. Sources and reasoning stay in Attio (evidence_urls, product_fit_reasons). Demo runs add "[demo]" after the event name only. On API success store channel and ts, set Sent; on error set Failed, stage unchanged. Advance to Pre-event Brief Ready.
+The 6.5 summary is one message for the whole event: one line per attendee "<marker> <name>, <company>, <best product> <letter>, <DRI first name>", then "Needs review: <names>" or "Needs review: none".
 
-The event summary posted in 6.5 uses the same style: one line per attendee "<marker> *<name>* · <company> · <best product> <letter> · DRI <code>", then a "Needs review" line listing names or "none".
-
-6.7 Debrief. Triggers (configured once, event-based): (a) new message in #event-coverage; act only if it is a thread reply whose parent ts matches a stored slack_thread_ts, otherwise ignore with no tool call; (b) reaction added on a message this agent posted (✅ on a transcript, 👍/👎 on a proposal). Manual fallback: the user pastes a note in this chat naming the attendee. A DRI may reply with text or a voice clip; both paths lead to the same extraction. Precondition: stage Pre-event Brief Ready, Routing Ready or Promoted; a person can be debriefed more than once. If the reply is an audio clip: download the file, transcribe with the built-in tool, post the transcript into the thread with "React ✅ to confirm, or reply with the corrected text", and stop; continue only on the ✅ reaction or a corrected text reply, using the confirmed text. If the reply is text: continue immediately. Write post_event_note, post_event_source_message_id, conversation_logged_at. Load IR Debrief Extraction: first create the Attio conversation note on the Person (idempotent by title), then produce the proposals draft and conversation_outcome. If the stage was Pre-event Brief Ready, advance to Conversation Logged, then Routing Ready; if it was Promoted, leave it at Promoted.
+6.7 Debrief. Triggers (configured once, event-based): (a) new message in #event-coverage; act only if it is a thread reply whose parent ts matches a stored slack_thread_ts, otherwise ignore with no tool call. Because one thread covers several attendees, resolve the attendee from the reply: match the first name or full name at the start of the reply (or transcript) against the attendees in that DRI's message; if none or more than one matches, ask once in the thread "Which person is this about: <names>?" and wait; (b) reaction added on a message this agent posted (✅ on a transcript, 👍/👎 on a proposal). Manual fallback: the user pastes a note in this chat naming the attendee. A DRI may reply with text or a voice clip; both paths lead to the same extraction. Precondition: stage Pre-event Brief Ready, Routing Ready or Promoted; a person can be debriefed more than once. If the reply is an audio clip: download the file, transcribe with the built-in tool, post the transcript into the thread with "React ✅ to confirm, or reply with the corrected text", and stop; continue only on the ✅ reaction or a corrected text reply, using the confirmed text. If the reply is text: continue immediately. Write post_event_note, post_event_source_message_id, conversation_logged_at. Load IR Debrief Extraction: first create the Attio conversation note on the Person (idempotent by title), then produce the proposals draft and conversation_outcome. If the stage was Pre-event Brief Ready, advance to Conversation Logged, then Routing Ready; if it was Promoted, leave it at Promoted.
 
 6.8 Proposal, approval, execution. Precondition Routing Ready or Promoted with a new proposals draft. Build the numbered change list per IR Debrief Extraction (case A, B or C), resolving investor entity, opportunity, note and task by their idempotency keys first. For case C post the note confirmation only and stop. Otherwise post the list in the briefing thread in this layout:
 
