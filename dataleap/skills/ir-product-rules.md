@@ -6,6 +6,8 @@ description: Signals, tier function and product ranking for Gen Cap, Fund and DI
 
 # IR Product Rules (version demo-v2)
 
+Version demo-v2. The agent reports this line as the skill version.
+
 `rules_version = demo-v2`. Write it as the first line of `product_fit_reasons` so every tier can be traced to the rule set that produced it.
 
 ## Purpose

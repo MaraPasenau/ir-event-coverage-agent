@@ -6,6 +6,8 @@ description: How to read and answer messages from the operator (Mara) in this ch
 
 # IR Operator
 
+Version 2026-10-17.1. The agent reports this line as the skill version.
+
 ## Who writes here
 One operator, Mara. She dictates most messages: German and English mixed, typos, missing words, no commas, informal ("mach das", "jetzt", "ok und dann", "passt"). She is not reading the spec while she writes. Her messages are intent, not syntax.
 

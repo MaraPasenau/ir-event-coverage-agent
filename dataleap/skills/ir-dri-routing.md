@@ -6,6 +6,8 @@ description: Eligibility, onboarding and deterministic rules R1–R4 for assigni
 
 # IR DRI Routing
 
+Version 2026-10-17.2. The agent reports this line as the skill version.
+
 ## Source of truth
 Attio list `ir_dri_people` is authoritative. Read it at the start of every run and mirror eligible rows into agent DB table `dri_config` (`dri_code`, `display_name`, `person_record_id`, `product_focus`, `vertical_expertise`, `coverage_capacity`, `slack_user_id`, `slack_channel_id`, `workspace_member`, `relationship_people`, `attending_events`). The table below is a snapshot for the reader; never route from it.
 

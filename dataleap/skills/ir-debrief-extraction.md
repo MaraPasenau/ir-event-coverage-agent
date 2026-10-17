@@ -6,6 +6,8 @@ description: How to turn a DRI's post-conversation message (text or confirmed tr
 
 # IR Debrief Extraction
 
+Version 2026-10-17.6. The agent reports this line as the skill version.
+
 ## Input
 `post_event_note`: the raw text a DRI posted in their #targets channel (top-level or as a thread reply), or the transcript the DRI confirmed with ✅ or 👍. Never extract from an unconfirmed transcript.
 

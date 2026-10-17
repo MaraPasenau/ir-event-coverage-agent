@@ -6,6 +6,8 @@ description: Attio workspace b2v schema, normalization functions, idempotency ke
 
 # IR Attio Contract (workspace b2v, schema read 2026-10-16)
 
+Version 2026-10-17.3. The agent reports this line as the skill version.
+
 ## Allowed Attio operations
 search-records, get-records-by-ids, create-record, update-record, add-record-to-list, update-list-entry-by-record-id, update-list-entry-by-id, list-records-in-list, create-note, search-notes-by-metadata, get-note-body, create-task, update-task (mark follow-up tasks complete only), list-tasks, list-attribute-definitions (read only, to resolve select option IDs and stage sets).
 Not allowed: merge-records, any delete, writes to objects or lists not listed here.
