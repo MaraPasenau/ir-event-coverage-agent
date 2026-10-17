@@ -24,7 +24,15 @@ Resolution, in this order:
 1. If the transcription tool accepts a vocabulary or prompt parameter, pass: the three product names, "intro call", "family office", the DRI's attendee names for the event, and the DRI display names. Check once in Phase 0 whether the parameter exists.
 2. Run the deterministic normalizer (`rules/transcript_normalize.py` with `rules/glossary.json`, names = that DRI's attendees for the event) on the raw transcript. It replaces tokens that are phonetically or lexically close to a product name, a fixed term or an attendee's full name, never function words, negations or tokens shorter than four characters, and never partial names.
 3. Post the corrected transcript. If anything changed, add one line: "Changed: Jinka → Gen Cap, Fun-Themen → Fund. React ✅ if this is right, or reply with the word that is wrong." If nothing changed: "React ✅ to confirm, or reply with the corrected text."
-4. A reply that names one correction ("DI, not Gen Cap", "Fund war richtig") is applied to the transcript and a new confirmation is posted; a reply that is a full sentence replaces the transcript. The confirmed text, not the raw ASR output, is `post_event_note`; the raw transcript is kept in `evidence_records` (topic transcript_raw).
+4. **Confirmation by intent.** Any reaction or reply by the DRI on or under a registered transcript message is a response to the transcript, never a new debrief. Classify it with judgement, in any language; ✅ and 👍 are only two of many valid forms:
+   - confirms ("yes", "ja", "passt", "genau so", "correct", "looks good", "go ahead", ✅, 👍) → the transcript is confirmed, continue;
+   - corrects one or a few words ("DI, not Gen Cap", "Fund war richtig", "her name is Weber") → apply, post the corrected transcript with a new "Changed:" line, wait again;
+   - replaces ("here is what I said: …", a full sentence covering the conversation) → the reply is the confirmed text;
+   - adds content ("and she liked the deck") → append to the transcript, post the merged text once for confirmation;
+   - rejects without detail ("no", "wrong") → ask once: "What should it say?";
+   - unclear → ask once, then stop.
+   The confirmed text, not the raw ASR output, is `post_event_note`; the raw transcript is kept in `evidence_records` (topic transcript_raw).
+6. **No internal narration.** Messages to a DRI never mention tool errors, retries, handlers or recovery ("the event handler hit a transcription-tool error"). Such events go to `run_log`; the DRI sees only the transcript and the confirmation request.
 5. Product and name slots the model still finds ambiguous after normalization (two candidates, or a token that matched nothing) are asked as one targeted question before the confirmation: "Did you mean Gen Cap or DI?" One question per transcript at most.
 
 ## Injection guard
