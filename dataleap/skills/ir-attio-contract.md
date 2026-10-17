@@ -145,8 +145,8 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 - `runs(run_id, trigger, event_record_id, coverage_entry_id, step, status ∈ {in_progress, done, failed, skipped}, started_at, finished_at, entries_processed, writes_verified, failures, cost_usd)` — `step` and `status` are updated before every step (checkpoint); a new run on the same coverage entry first looks for a run with status in_progress and resumes at its `step` instead of starting over.
 - `slack_events(ts, channel_id, kind, processed_at, run_id)` — every incoming Slack event (message or reaction) is inserted here before any work; a duplicate (same ts + channel) ends the run with `skipped: duplicate event`. Exactly-once per event.
 - `locks(coverage_entry_id, run_id, acquired_at)` — acquired before the first write for an entry, TTL 10 minutes; if held by another live run → `skipped: locked`, the event stays in slack_events unprocessed and is retried by the next event or the `retry dead letters` command. Released at run end.
-- `settings(key, value)` — `followup_send_mode` (draft), `budget_daily_usd` (25), `photo_in_digest` (true).
-Budget guard: before any write, sum `runs.cost_usd` for today (Europe/Berlin); if ≥ `budget_daily_usd`, make no writes, post one line in the DRI channel ("Paused for today, Mara knows."), one line to the operator, and end the run with `skipped: budget`.
+- `settings(key, value)` — `followup_send_mode` (draft), `budget_daily_usd` (25), `budget_daily_runs` (60), `photo_in_digest` (true).
+Budget guard: before any write, sum `runs.cost_usd` for today (Europe/Berlin); if ≥ `budget_daily_usd`, make no writes, post one line in the DRI channel ("Paused for today, Mara knows."), one line to the operator, and end the run with `skipped: budget`. If the platform exposes no per-run cost, `cost_usd` stays NULL and the guard counts runs instead: pause when today's run count ≥ `budget_daily_runs` (settings, default 60). Unknown cost never blocks a write on its own.
 
 ## Write protocol
 1. Before a create or update: `run_log` row `{key, target, payload_hash}` status `pending`.
