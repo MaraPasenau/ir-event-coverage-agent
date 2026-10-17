@@ -113,3 +113,17 @@ Shape, first person of the DRI, 60–110 words, plain sentences:
 4. Sign-off with the DRI's first name.
 Rules: no amounts, no ticket sizes, no fund performance, no promises not in the debrief; no exclamation marks; subject line for email = "<event short name>: next step" (e.g. "Berlin Capital Signals: next step"). Outcome No Fit → no draft (case C never reaches 6.9). Nurture with a next_step (case B) → a shorter 40–70 word version: thanks, the one thing agreed, sign-off.
 Channel selection and task handling are specified in the agent prompt, 6.9.
+
+### Revising and closing a follow-up
+Any reply or reaction by the DRI on or under a follow-up message is read by intent, text or voice (voice is transcribed and applied directly; no confirmation step, the DRI sees the result):
+- edit ("change next week to Tuesday", "drop the second sentence", "say I'll attach the deck", "kürzer") → apply, post the full new version as a reply ("v2"), update the Gmail draft in place if one exists, keep v1 in the Attio note;
+- replace (a complete new text) → that is the draft; same handling;
+- approve without sending ("good", "passt", 👍) → acknowledge in one short line, task stays open;
+- sent ("sent", "raus", "done", ✅) → complete the task, append "Follow-up sent by <DRI> on <date> via <channel>" to the note;
+- send request ("send it", "schick raus", "go ahead and send") → see send mode below;
+- unclear → ask once.
+
+### Send mode (configuration, default `draft`)
+- `draft`: the agent never sends. A send request gets: "I don't send on your behalf; the draft is in your Gmail drafts / above. Tell me when it's out."
+- `send_on_explicit`: only when the Gmail connector is connected to that DRI's own mailbox, the reply contains an explicit send instruction (never a mere approval), the recipient address is the one on the Person record, and the latest posted version is the one sent. The agent sends, posts "Sent to <address> at <time>", completes the task, appends the sent text to the note, logs the Slack ts of the instruction in run_log. No batching, no sending to a different address, no sending of materials that were not discussed.
+The mode is set per workspace in dri_config (`followup_send_mode`), never per message.

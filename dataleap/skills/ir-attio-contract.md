@@ -140,7 +140,7 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 - `proposals` (schema in IR Debrief Extraction)
 - `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question, followup, test}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
 - `run_log(run_id, step, entry_id, key, target, payload_hash, status ∈ {pending, verified, mismatch, failed, ignored}, detail, latency_ms, created_at)`
-- `dri_config` (mirror of `ir_dri_people`, rebuilt every run)
+- `dri_config` (mirror of `ir_dri_people`, rebuilt every run) and one settings row `followup_send_mode` ∈ {draft, send_on_explicit}, default draft
 - `runs(run_id, trigger, event_record_id, started_at, finished_at, entries_processed, writes_verified, failures)`
 
 ## Write protocol
