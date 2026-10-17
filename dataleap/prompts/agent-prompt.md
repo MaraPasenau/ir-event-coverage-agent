@@ -81,7 +81,8 @@ Also attending, no evidence yet:
 Rules:
 - Marker: 🟢 if the best tier is A, 🟡 if B, 🔵 if C. One marker per attendee, at the start of the name line. Unrated entries have no marker and appear only in the final block.
 - Tiers line: only products at A/B/C, as "<product> <letter>", comma-separated, best first, e.g. "Fund A, Gen Cap B". Products at Needs Review or Irrelevant are not mentioned.
-- Background: one sentence, third person, facts from evidence only. No citations, no dates in brackets, no "synthetic" wording. Entries with identity_review_state = Pending add "identity unverified" at the end of the background sentence.
+- Background: one sentence, third person, stating the fact itself ("Managing Director of a foundation endowment that allocates via fund commitments with an ESG mandate."). Never describe the source ("the supplied notes describe", "according to", "research shows"). No citations, no dates in brackets.
+- Event name in the title: the Attio name with any bracketed suffix such as "[Synthetic]" removed, then "[demo]" for demo runs. "<n> people" becomes "1 person" for a single attendee. Entries with identity_review_state = Pending add "identity unverified" at the end of the background sentence.
 - Interests: the professional_interests field from 6.3, verbatim, without the word "Interests" duplicated. No questions, no ticket sizes, no data gaps in Slack; data_gaps and conversation_talking_points stay in Attio for later qualification.
 - Address the DRI by display_name from dri_config; mention by <@slack_user_id> in the first line. Never show a dri_code in Slack.
 - No section headers like Fit/Why/Ask/Worth asking, no middle dots, no dashes as separators, no second person for the attendee. Plain sentences and line breaks only.
