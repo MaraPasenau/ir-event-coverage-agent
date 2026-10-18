@@ -120,7 +120,7 @@ Shape, first person of the DRI, 60–110 words, plain sentences:
 1. One line of thanks naming the event and one concrete thing from the conversation (from the note, not invented).
 2. The agreed next step as a proposal with a time frame ("I'll send over the Gen Cap material this week"; "would Tuesday or Wednesday next week work for a 30-minute call?").
 3. If `requested_materials` is non-empty: name what will be sent, nothing else.
-4. Sign-off with the DRI's first name.
+4. Salutation, paragraphs, closing and signature per the layout in the agent prompt, 6.9 (register from settings.followup_register).
 Rules: no amounts, no ticket sizes, no fund performance, no promises not in the debrief; no exclamation marks; no sentences about the email or the process itself ("I've noted that as our next step", "I'll keep this focused"), no stock gratitude ("I appreciated the chance to connect"); one concrete reference from the conversation, the next step with a time, sign-off, nothing else; subject line for email = "<event short name>: next step" (e.g. "Berlin Capital Signals: next step"). Outcome No Fit → no draft (case C never reaches 6.9). Nurture with a next_step (case B) → a shorter 40–70 word version: thanks, the one thing agreed, sign-off.
 Channel selection and task handling are specified in the agent prompt, 6.9.
 

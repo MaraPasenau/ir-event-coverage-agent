@@ -60,6 +60,8 @@ vertical_map:                      # DRI vertical vocabulary → attendee vertic
 
 settings:                          # mirrored into agent DB `settings`
   followup_send_mode: draft        # draft | send_on_explicit
+  followup_register: first_name    # first_name ("Hi Felix," / "Best,") | formal ("Dear Mr Olle," / "Kind regards,")
+  followup_language: en
   budget_daily_usd: 0              # 0 = disabled; only meaningful once the platform exposes per-run cost
   budget_daily_runs: 0             # 0 = no run limit; set a number to pause the agent after that many runs per day
   photo_in_digest: true
