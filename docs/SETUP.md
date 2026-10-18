@@ -23,7 +23,7 @@ One `ir_dri_people` entry per DRI: `profile_status = Confirmed`, `product_focus`
 1. Skills → import the five files from `dataleap/skills/` (each has a `Version …` line under its heading; the import strips front matter). Re-importing creates new skill IDs: the agent must load skills by name, never by saved ID.
 2. New agent chat → paste the first message from `docs/SUBMISSION.md` ("set up from repository …"). The agent pulls `dataleap/prompts/agent-prompt.md` and `config/workspace.yaml`, runs Phase 0 and stops at `go`.
 3. Check the Phase 0 report: five skill versions, channel IDs resolved, bot membership, `rules_version demo-v2`, agent DB tables created.
-4. `go`. For an existing event: `run 6.4–6.6 <event>`; for a new one: attach the CSV and `run 6.1`.
+4. `go`. For a new event: attach the CSV (agent format or Luma guest export) and write `import <event name>, <date>`; the agent runs import → research → tiers → assignment → briefings and reports once. For an existing event: `run 6.4–6.6 <event>`.
 5. Triggers: the agent configures two per DRI channel (new message, reaction added), each filtered to that DRI's user ID; approve enabling them when it asks. Six triggers for three DRIs.
 
 ## 5. First debrief
@@ -39,4 +39,4 @@ Post a voice or text message in a DRI channel naming an attendee. Expected: tran
 - Every message in a DRI channel is a paid run. Do not test with "hello".
 
 ## Commands the operator uses
-`go`, `run 6.1` (with CSV), `run 6.2–6.5 <event>`, `run 6.4–6.6 <event>`, `send briefings <event>`, `attending <event>: <names>`, `add dri <Name>, <email>, <products>, <verticals>`, `list dris`, `status`, `retry dead letters`, `run test T<n>`, `stop`.
+`go`, `import <event>, <date>` (with CSV; `import only` stops after 6.1), `run 6.2–6.5 <event>`, `run 6.4–6.6 <event>`, `send briefings <event>`, `attending <event>: <names>`, `add dri <Name>, <email>, <products>, <verticals>`, `list dris`, `status`, `retry dead letters`, `run test T<n>`, `stop`.
