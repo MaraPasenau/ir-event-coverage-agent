@@ -113,6 +113,7 @@ Second post-event run on the same entry (Tara, Testperson 4, 03:34–11:35 PDT):
 
 Known issues, ranked by what I would fix first after submission:
 
+0. **Silent failure (fixed in contract 2026-10-18.1, not yet live).** The confirmation run for Felix Olle (2026-10-18 12:20 CEST) died on a multi-statement SQL call and nobody was told for six hours; the DRI and the back office read Slack only. Now: one failure handler per run, thread line to the DRI, ops line after the last attempt, 10-minute watchdog trigger, daily line. Needs the trigger created in Dataleap and the helper updated (T27, T28).
 1. **No per-step timing.** `runs` records start, end and checkpoint; it does not record per-step durations, so the 2–4 minutes per Slack run cannot be attributed (model turns vs. Slack/Attio/DB latency). First task: duration per `run_log` row, then decide between fewer tool calls and smaller context.
 2. **One agent for every path.** A "Yes" on a proposal loads the same instruction set as an 80-row import. Production shape: a lean Slack handler (transcribe, glossary, post, register; approve, execute, read back) and a separate research path. Partly mitigated by the token-economy rules in IR Operator 2026-10-17.2.
 3. **Tests are graded by the agent that runs them.** T0–T25 run on command inside the agent. An external check exists only for the rule set (`evals/run_evals.py`). Next: a read-only verifier that compares Attio and Slack state against expected fixtures.

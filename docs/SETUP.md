@@ -25,6 +25,7 @@ One `ir_dri_people` entry per DRI: `profile_status = Confirmed`, `product_focus`
 3. Check the Phase 0 report: five skill versions, channel IDs resolved, bot membership, `rules_version demo-v2`, agent DB tables created.
 4. `go`. For a new event: attach the CSV (agent format or Luma guest export) and write `import <event name>, <date>`; the agent runs import → research → tiers → assignment → briefings and reports once. For an existing event: `run 6.4–6.6 <event>`.
 5. Triggers: the agent configures two per DRI channel (new message, reaction added), each filtered to that DRI's user ID; approve enabling them when it asks. Six triggers for three DRIs.
+6. Scheduled triggers, created in the Dataleap trigger dialog (type: schedule): every 10 minutes with the message `run watchdog`, and daily at 08:00 workspace time with the message `daily run`. The watchdog re-dispatches Slack events that a failed run left behind and tells the DRI in Slack; without it a failed run is invisible to everyone who does not open Dataleap.
 
 ## 5. First debrief
 Post a voice or text message in a DRI channel naming an attendee. Expected: transcript with a `Changed:` line if the normalizer corrected a product name → any affirmative reply confirms → "Attio changes for <name>" proposal → any affirmative reply approves → "Done for <name>" with Attio links → follow-up draft (Gmail draft if the DRI's Gmail is connected, otherwise text with a mailto link) → ✅ or "sent" closes the follow-up task.

@@ -65,6 +65,9 @@ settings:                          # mirrored into agent DB `settings`
   photo_in_digest: true
   briefing_trigger_time: "08:00"   # daily, workspace timezone; events starting within 36 h
   lock_ttl_minutes: 10
+  watchdog_interval_minutes: 10   # scheduled trigger "run watchdog"; re-dispatches unprocessed Slack events, marks stale runs failed
+  watchdog_max_attempts: 3
+  ops_channel_id: C0C9WQFS78A        # where failures and the daily line go; the back office reads Slack, not Dataleap
   reminder_after_hours: 48
 
 skills:                            # names as imported in Dataleap; versions are in each file's "Version …" line

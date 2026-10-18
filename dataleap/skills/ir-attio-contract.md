@@ -1,12 +1,12 @@
 ---
 name: IR Attio Contract
-version: 2026-10-17.4
+version: 2026-10-18.1
 description: Attio workspace b2v schema, normalization functions, idempotency keys, agent DB tables and write protocol for the Event Coverage Agent. Use before any Attio read or write.
 ---
 
 # IR Attio Contract (workspace b2v, schema read 2026-10-16)
 
-Version 2026-10-17.4. The agent reports this line as the skill version.
+Version 2026-10-18.1. The agent reports this line as the skill version.
 
 ## Allowed Attio operations
 search-records, get-records-by-ids, create-record, update-record, add-record-to-list, update-list-entry-by-record-id, update-list-entry-by-id, list-records-in-list, create-note, search-notes-by-metadata, get-note-body, create-task, update-task (mark follow-up tasks complete only), list-tasks, list-attribute-definitions (read only, to resolve select option IDs and stage sets).
@@ -141,13 +141,14 @@ Display lists, no direct writes: `ir_fund_opportunities`, `ir_di_opportunities`,
 ## Agent DB tables
 - `evidence_records(id, coverage_entry_id, claim, topic, source_url, source_tag, source_date, collected_at)`
 - `proposals` (schema in IR Debrief Extraction)
-- `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question, followup, test}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
+- `slack_messages(ts, channel_id, kind ∈ {briefing, summary, transcript, proposal, confirmation, question, followup, status, test}, coverage_entry_id, proposal_id, dri_code, posted_at)` — every message the agent posts gets a row **before** anything else happens. The reaction trigger resolves `ts → kind` here; unknown ts → no-op.
 - `run_log(run_id, step, entry_id, key, target, payload_hash, status ∈ {pending, verified, mismatch, failed, ignored}, detail, latency_ms, created_at)`
 - `dri_config` (mirror of `ir_dri_people`, rebuilt every run) and one settings row `followup_send_mode` ∈ {draft, send_on_explicit}, default draft
-- `runs(run_id, trigger, event_record_id, coverage_entry_id, step, status ∈ {in_progress, done, failed, skipped}, started_at, finished_at, entries_processed, writes_verified, failures, cost_usd)` — `step` and `status` are updated before every step (checkpoint); a new run on the same coverage entry first looks for a run with status in_progress and resumes at its `step` instead of starting over.
-- `slack_events(ts, channel_id, kind, processed_at, run_id)` — every incoming Slack event (message or reaction) is inserted here before any work; a duplicate (same ts + channel) ends the run with `skipped: duplicate event`. Exactly-once per event.
+- `runs(run_id, trigger, event_record_id, coverage_entry_id, step, status ∈ {in_progress, done, failed, skipped}, started_at, finished_at, entries_processed, writes_verified, failures, cost_usd, error)` — `step` and `status` are updated before every step (checkpoint); a new run on the same coverage entry first looks for a run with status in_progress and resumes at its `step` instead of starting over. A run never ends in any other state than done, failed or skipped: the runtime helper wraps every run in one handler that, on any exception, sets `status = failed` with `error`, releases the lock, and runs the failure protocol below before re-raising. A run that died without reaching this handler is detected by the watchdog (status in_progress, started_at older than 15 minutes) and treated as failed.
+- `slack_events(ts, channel_id, kind, processed_at, run_id, attempts, last_error, notified_at)` — every incoming Slack event (message or reaction) is inserted here before any work; a duplicate (same ts + channel) ends the run with `skipped: duplicate event`. Exactly-once per event. `processed_at` is set only when the run that handled the event ended `done`; an event whose run failed keeps `processed_at` empty, `attempts` incremented and `last_error` set, so nothing a DRI said is ever lost.
 - `locks(coverage_entry_id, run_id, acquired_at)` — acquired before the first write for an entry, TTL 10 minutes; if held by another live run → `skipped: locked`, the event stays in slack_events unprocessed and is retried by the next event or the `retry dead letters` command. Released at run end.
-- `settings(key, value)` — `followup_send_mode` (draft), `budget_daily_usd` (0 = disabled), `budget_daily_runs` (0 = disabled), `photo_in_digest` (true).
+- `settings(key, value)` — `followup_send_mode` (draft), `budget_daily_usd` (0 = disabled), `budget_daily_runs` (0 = disabled), `photo_in_digest` (true), `watchdog_max_attempts` (3), `ops_channel_id` (the summary channel from config/workspace.yaml).
+- SQL: the helper executes exactly one statement per call; a call with several statements is split by the helper, never sent. (The platform rejects multi-statement calls; this was the cause of a silent failure on 2026-10-18.)
 Budget guard (off unless a setting is > 0): before any write, sum `runs.cost_usd` for today (Europe/Berlin); if `budget_daily_usd` > 0 and the sum ≥ it, make no writes, post one line in the DRI channel ("Paused for today, Mara knows."), one line to the operator, and end the run with `skipped: budget`. If the platform exposes no per-run cost, `cost_usd` stays NULL and the guard counts runs instead, but only if `budget_daily_runs` > 0: pause when today's run count ≥ that number. With both settings at 0 the guard does nothing. Unknown cost never blocks a write on its own.
 
 ## Write protocol
@@ -158,3 +159,16 @@ Budget guard (off unless a setting is > 0): before any write, sum `runs.cost_usd
 5. After a timeout or ambiguous response: look up by idempotency key first; create only if absent. Retries: max 2 with backoff 2 s then 8 s plus random jitter 0–1 s; on HTTP 429 honour Retry-After; never retry a create after an ambiguous response.
 6. A failed item that still fails after retries goes to `run_log` with status `failed` and is listed in the run summary under "Dead letters"; the user command `retry dead letters` re-runs them through the same protocol.
 Reads are not logged individually. One `runs` row per run.
+
+## Failure protocol (every failed run, no exceptions)
+The guarantee to the team is: either the information is in Attio, or Slack says that it is not. A failure that nobody sees in Slack is the one defect this agent must not have; the DRIs and the back office read Slack, not Dataleap.
+1. On failure the run sets `runs.status = failed`, `error`, releases its lock, and leaves the triggering Slack event unprocessed with `attempts + 1` and `last_error`.
+2. If the run was triggered by a DRI message or reaction and `attempts < watchdog_max_attempts`: post one line in that thread, registered as kind `status`: "Not saved yet, I'll retry in a few minutes. Nothing was written." Post it once per event (`notified_at`), not once per attempt.
+3. If `attempts ≥ watchdog_max_attempts`: post in the thread "I couldn't save this to Attio. Your message is kept and <operator first name> has been notified." and one line in `ops_channel_id`: "<channel> · <DRI> · <kind> · ts <ts> · failed <n>× · <last_error>"; the event becomes a dead letter and waits for `retry dead letters`.
+4. Pre-event runs (6.1–6.6) report failures in the operator chat and in `ops_channel_id` with the same line; never in a DRI channel.
+
+## Watchdog (scheduled trigger, every 10 minutes, message `run watchdog`)
+A short run with no model judgement: (a) every `slack_events` row with `processed_at` empty, no live lock, `attempts < watchdog_max_attempts` and `ts` older than 5 minutes is re-dispatched through the normal event path, one at a time, oldest first, at most 5 per watchdog run; (b) every `runs` row `in_progress` with `started_at` older than 15 minutes is set to `failed` (`error = stale`), its lock released, and its event handled by (a); (c) events at `attempts ≥ watchdog_max_attempts` without `notified_at` get the step-3 messages. The watchdog posts nothing when there is nothing to do and never writes to Attio itself.
+
+## Daily line (part of the 08:00 scheduled run)
+One message in `ops_channel_id`, registered as kind `summary`: "Yesterday: <n> DRI messages, <m> saved to Attio, <k> open" and, when k > 0, one line per open event (channel, DRI, ts, attempts, last_error). This is the back office's control without opening Dataleap.
